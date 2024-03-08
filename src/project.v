@@ -16,7 +16,7 @@ module tt_um_example (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-    reg shiftreg [31:0] // shift register
+    reg shiftreg [31:0]; // shift register
   // All output pins must be assigned. If not used, assign to 0.
     assign ui_out[0]  = ui_in[0];
     assign uo_out[7:1] = shiftreg[31:25];
