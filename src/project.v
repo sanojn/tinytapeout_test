@@ -21,6 +21,6 @@ module tt_um_example (
     assign ui_out[0]  = ui_in[0];
     assign uo_out[7:1] = shiftreg[31:25];
     always @(posedge clk)
-        shiftreg := { shiftreg[30:0] , ui_in[1] }; 
+        shiftreg = { shiftreg[30:0] , ui_in[1] }; 
 
 endmodule
