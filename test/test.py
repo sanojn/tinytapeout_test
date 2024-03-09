@@ -4,6 +4,7 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
+from cocotb.triggers import RisingEdge
 
 def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
