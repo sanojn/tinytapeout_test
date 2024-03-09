@@ -1,4 +1,4 @@
-_pro# SPDX-FileCopyrightText: © 2023 Uri Shaked <uri@tinytapeout.com>
+_project_pro# SPDX-FileCopyrightText: © 2023 Uri Shaked <uri@tinytapeout.com>
 # SPDX-License-Identifier: MIT
 
 import cocotb
@@ -11,9 +11,9 @@ def hex(n): # Return a binary octet with 2 BCD digits
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
-    if (dut.tick==0):
-      await RisingEdge(dut.tick)
-    await RisingEdge(dut.tick)
+    if (dut.user_project.tick.value==0):
+      await RisingEdge(dut.user_project.tick)
+    await RisingEdge(dut.user_project.tick)
     # Check one period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
