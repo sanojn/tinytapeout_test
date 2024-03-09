@@ -25,5 +25,6 @@ module debouncer (
                      
             Released: if (tick) state <= 2'b00;
         endcase
-        debounced <= (state == 2'b11);
+    end
+    debounced <= (state == 2'b11);
 endmodule
