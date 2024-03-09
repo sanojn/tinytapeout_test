@@ -5,6 +5,36 @@
 
 `define default_netname none
 
+module debouncer (
+    input wire clk,
+    input wire rst_sync,
+    input wire tick,
+    input wire button,
+    output wire debounced
+);
+    // Synchronize and debounce input signals
+    // Clock cycle is several ms, so single flop is sufficient for metastability avoidance
+    reg button_d;
+    reg [1:0] state;
+    parameter Idle     = 2'b00;
+    parameter Glitch   = 2'b01;
+    parameter Pressed  = 2'b11;
+    parameter Released = 2'b10;
+    always @(posedge clk) begin
+        button_d <= button;
+        case (state)
+            Idle: if (tick & button_d) state <= 2'b01;  
+                  
+            Glitch: if (!button_d) state <= 2'b00;
+                    else if (tick) state <= 2'b11;
+                    
+            Pressed: if (!button_d) state <= 2'b11;
+                     
+            Released: if (tick) state <= 2'b00;
+        endcase
+        debounced <= (state == 2'b11);
+endmodule
+
 module tt_um_example (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
@@ -21,14 +51,16 @@ module tt_um_example (
     reg rst_sync1, rst_sync;
     always @(negedge clk)
         {rst_sync, rst_sync1} = {rst_sync1, rst_n};
+
+    // Prescaler provides a one clock-cycle pulse at 32 Hz
+    reg [9:0] prescaler;
+    always @(posedge clk)
+        prescaler = prescaler + 1'd1;
+    wire tick;
+    assign tick = prescaler == 10'd0;
     
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
-    //debouncer (clk, rst_sync, ui_in[0], btn4);
-    //debouncer (clk, rst_sync, ui_in[1], btn6);
-    //debouncer (clk, rst_sync, ui_in[2], btn8);
-    //debouncer (clk, rst_sync, ui_in[3], btn10);
-    //debouncer (clk, rst_sync, ui_in[4], btn20);
-    //debouncer (clk, rst_sync, ui_in[5], btn100);
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[0]), .debounced(btn4));
     assign btn4 = ui_in[0];
     assign btn6 = ui_in[1];
     assign btn8 = ui_in[2];
@@ -65,28 +97,8 @@ module tt_um_example (
         end
 
     // All output pins must be assigned. If not used, assign to 0.
-    //assign uo_out[7:0] = {digit10, digit1};
-    //assign uio_out = 8'b0;
-    //assign uio_oe  = 8'b0;
+    assign uo_out[7:0] = {digit10, digit1};
+    assign uio_out = 8'b0;
+    assign uio_oe  = 8'b0;
 
-     sky130_sram_1kbyte_1rw1r_8x1024_8 mysram(
-//`ifdef USE_POWER_PINS
-//    vccd1,
-//    vssd1,
-//`endif
-// Port 0: RW
-         .clk0(clk),
-         .csb0(ui_in[0]),
-         .web0(ui_in[1]),
-         .wmask0(1'b1),
-         .addr0({uio_in[7:0],ui_in[3:2]}),
-         .din0({digit1,digit10}),
-         .dout0(uio_out),
-// Port 1: R
-         .clk1(clk),
-         .csb1(ui_in[4]),
-         .addr1({digit1,digit10}),
-         .dout1(uio_oe)
-  );
-        
 endmodule
