@@ -1,5 +1,6 @@
 module debouncer (
     input wire clk,
+    input rst_n,
     input wire tick,
     input wire button,
     output wire debounced
@@ -13,15 +14,17 @@ module debouncer (
     parameter Pressed  = 2'b11;
     parameter Released = 2'b10;
     always @(posedge clk) begin
-        button_d <= button;
+      button_d <= button;
+      if (!rst_n) state <= 2'b00;
+      else
         case (state)
             Idle: if (tick & button_d) state <= 2'b01;  
-                  
+                 
             Glitch: if (!button_d) state <= 2'b00;
                     else if (tick) state <= 2'b11;
-                    
+                  
             Pressed: if (!button_d) state <= 2'b11;
-                     
+                   
             Released: if (tick) state <= 2'b00;
         endcase
     end
