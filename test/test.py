@@ -5,12 +5,29 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
 
+def hex(n): # Return integer equivalent of 2 BCD digits
+  return (n/10)*16 + n%10;
+  
+def testCycle(period):
+  # Check one period
+  for i in range(period,period,-1):
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == hex(i)
+  # Check one more period
+  for i in range(period,period,-1):
+    await ClockCycles(dut.clk, 1)
+    assert dut.uo_out.value == hex(i)
+  # Multiple cycles
+  await ClockCycles(dut.clk, 3*period)
+  assert dut.uo_out.value == hex(1)
+
+
 @cocotb.test()
 async def test_adder(dut):
-  dut._log.info("Start")
+  dut._log.info("Start testbench")
   
   # Our example module doesn't use clock and reset, but we show how to use them here anyway.
-  clock = Clock(dut.clk, 10, units="us")
+  clock = Clock(dut.clk, 1000000/32768, units="us")
   cocotb.start_soon(clock.start())
 
   # Reset
@@ -24,9 +41,23 @@ async def test_adder(dut):
 
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
-  dut.ui_in.value = 20
-  dut.uio_in.value = 30
-
-  await ClockCycles(dut.clk, 1)
-
-  assert dut.uo_out.value == 50
+  dut.ui_in.value = 0
+  dut.uio_in.value = 0
+  
+  testCycle(1)
+  dut.u_in.value = 1 # press btn4
+  testCycle(4)
+  dut.u_in.value = 2 # press btn6
+  testCycle(6)
+  dut.u_in.value = 4 # press btn8
+  testCycle(8)
+  dut.u_in.value = 8 # press btn10
+  testCycle(10)
+  dut.u_in.value = 16 # press btn12
+  testCycle(12)
+  dut.u_in.value = 32 # press btn20
+  testCycle(20)
+  dut.u_in.value = 32 # press btn100
+  testCycle(100)
+  
+  dut._log.info("End testbench")
