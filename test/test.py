@@ -33,9 +33,9 @@ async def testCycle(dut,period):
     await ClockCycles(dut.clk,1,False) # Allow for synch delay
     assert dut.uo_out.value == hex(period) # Counter should have rolled over 
     await ClockCycles(dut.clk,1,False)
-    assert dut.uo_out.value == hex(period) # But should stop now
+    assert dut.uo_out.value == hex(period-1) # The debouncer changes state as we roll down once more
     await ClockCycles(dut.clk,1,False)
-    assert dut.uo_out.value == hex(period) # But should stop now
+    assert dut.uo_out.value == hex(period-1) # And the counter should stop now
 
 @cocotb.test()
 async def test_adder(dut):
