@@ -16,17 +16,18 @@ Press buttons to roll various types of TTRPG dice
 Press one of the buttons ui[6:0] and release.
 A dice roll is shown on the LED display.
 
-ui[0] rolls a d4.
-ui[1] rolls a d6.
-ui[2] rolls a d8.
-ui[3] rolls a d10.
-ui[4] rolls a d12.
-ui[5] rolls a d20.
-ui[6] rolls a d100.
+* ui[0] rolls a d4.
+* ui[1] rolls a d6.
+* ui[2] rolls a d8.
+* ui[3] rolls a d10.
+* ui[4] rolls a d12.
+* ui[5] rolls a d20.
+* ui[6] rolls a d100.
 
 ## External hardware
 
 Pullups on ui[6:0] with pushbuttons closing to GND.
+
 A two-digit common-cathode LED display. Segment anodes are connected to uo[7:0] (A,B,C..,G,Dot in that order)
 Left cathode connected to uio[1], right cathode to uio[0].
 
