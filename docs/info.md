@@ -9,12 +9,16 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+Press buttons to roll various types of TTRPG dice
 
 ## How to test
 
-Explain how to use your project
+Press one of the buttons ui[6:0] and release.
+A dice roll is shown on the LED display.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+Pullups on ui[6:0] with pushbuttons closing to GND.
+A two-digit common-cathode LED display. Segment anodes are connected to uo[7:0] (A,B,C..,G,Dot in that order)
+Left cathode connected to uio[1], right cathode to uio[0].
+
