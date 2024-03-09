@@ -23,7 +23,7 @@ module debouncer (
             Glitch: if (!button_d) state <= 2'b00;
                     else if (tick) state <= 2'b11;
                   
-            Pressed: if (!button_d) state <= 2'b11;
+            Pressed: if (!button_d) state <= 2'b10;
                    
             Released: if (tick) state <= 2'b00;
         endcase
