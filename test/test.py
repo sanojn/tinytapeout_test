@@ -11,17 +11,14 @@ def hex(n): # Return binary integer equivalent of 2 BCD digits
 async def testCycle(dut,period):
     # Check one period
     for i in range(period,period,-1):
-      await ClockCycles(dut.clk, 1)
-      await ReadOnly;
+      await ClockCycles(dut.clk, 1, false)
       assert dut.uo_out.value == hex(i)
     # Check one more period
     for i in range(period,period,-1):
-      await ClockCycles(dut.clk, 1)
-      await ReadOnly;
+      await ClockCycles(dut.clk, 1, false)
       assert dut.uo_out.value == hex(i)
     # Multiple cycles
-    await ClockCycles(dut.clk, 3*period)
-    await ReadOnly;
+    await ClockCycles(dut.clk, 3*period, false)
     assert dut.uo_out.value == hex(1)
 
 @cocotb.test()
@@ -37,8 +34,7 @@ async def test_adder(dut):
   dut.ui_in.value = 0
   dut.uio_in.value = 0
   dut.rst_n.value = 0
-  await ClockCycles(dut.clk, 10)
-  await ReadOnly;
+  await ClockCycles(dut.clk, 10, false)
   dut.rst_n.value = 1
   assert dut.uo_out.value == hex(1)
 
