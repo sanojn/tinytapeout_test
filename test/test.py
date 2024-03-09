@@ -12,13 +12,16 @@ async def testCycle(dut,period):
     # Check one period
     for i in range(period,period,-1):
       await ClockCycles(dut.clk, 1)
+      await ReadOnly();
       assert dut.uo_out.value == hex(i)
     # Check one more period
     for i in range(period,period,-1):
       await ClockCycles(dut.clk, 1)
+      await ReadOnly();
       assert dut.uo_out.value == hex(i)
     # Multiple cycles
     await ClockCycles(dut.clk, 3*period)
+    await ReadOnly();
     assert dut.uo_out.value == hex(1)
 
 @cocotb.test()
@@ -35,6 +38,7 @@ async def test_adder(dut):
   dut.uio_in.value = 0
   dut.rst_n.value = 0
   await ClockCycles(dut.clk, 10)
+  await ReadOnly();
   dut.rst_n.value = 1
   assert dut.uo_out.value == hex(1)
 
