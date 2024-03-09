@@ -7,26 +7,24 @@ from cocotb.triggers import ClockCycles
 
 def hex(n): # Return integer equivalent of 2 BCD digits
   return (n/10)*16 + n%10;
-  
-def testCycle(period):
-  # Check one period
-  for i in range(period,period,-1):
-    await ClockCycles(dut.clk, 1)
-    assert dut.uo_out.value == hex(i)
-  # Check one more period
-  for i in range(period,period,-1):
-    await ClockCycles(dut.clk, 1)
-    assert dut.uo_out.value == hex(i)
-  # Multiple cycles
-  await ClockCycles(dut.clk, 3*period)
-  assert dut.uo_out.value == hex(1)
-
 
 @cocotb.test()
 async def test_adder(dut):
+  def testCycle(period):
+    # Check one period
+    for i in range(period,period,-1):
+      await ClockCycles(dut.clk, 1)
+      assert dut.uo_out.value == hex(i)
+    # Check one more period
+    for i in range(period,period,-1):
+      await ClockCycles(dut.clk, 1)
+      assert dut.uo_out.value == hex(i)
+    # Multiple cycles
+    await ClockCycles(dut.clk, 3*period)
+    assert dut.uo_out.value == hex(1)
+
   dut._log.info("Start testbench")
   
-  # Our example module doesn't use clock and reset, but we show how to use them here anyway.
   clock = Clock(dut.clk, 1000000/32768, units="us")
   cocotb.start_soon(clock.start())
 
