@@ -17,6 +17,13 @@ async def testCycle(dut,period):
     await RisingEdge(dut.user_project.tick)
     await ClockCycles(dut.clk, 2, False) # Let the debounce FSM see the tick
     # Now the counter should be rolling
+    # Wait until it's 1 to simplify tests
+    if (dut.uo_out.value!=hex(1)):
+      for i in range(0,period):
+        await ClockCycles(dut.clk, 1, False)
+        if (dut.uo_out.value!=hex(1)) break;
+    for i in range(1 period):
+      await Clockcycles(dut.clk, 1, False);
     # Check one period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
