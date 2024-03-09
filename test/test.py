@@ -9,6 +9,10 @@ def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
 
 async def testCycle(dut,period):
+    await ClockCycles(dut.clk, 1, False) # allow for synch delay
+    # allow input to be deglitched
+    if (dut.tick==0) await RisingEdge(dut.tick)
+    await RisingEdge(dut.tick)
     # Check one period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
@@ -20,6 +24,12 @@ async def testCycle(dut,period):
     # Multiple cycles
     await ClockCycles(dut.clk, 3*period, False)
     assert dut.uo_out.value == hex(1)
+    # Release button and verify that counting stops
+    dut.ui_in = 0;
+    await ClockCycles(dut,clk,False) # Allow for synch delay
+    assert dut.uo_out.value == hex(period) # Counter should have rolled over 
+    await ClockCycles(dut,clk,False)
+    assert dut.uo_out.value == hex(period) # And should stay there
 
 @cocotb.test()
 async def test_adder(dut):
