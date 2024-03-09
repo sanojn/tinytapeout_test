@@ -23,7 +23,7 @@ async def testCycle(dut,period):
         await ClockCycles(dut.clk, 1, False)
         if (dut.uo_out.value!=hex(1)):
           break;
-    for i in range(1 period):
+    for i in range(1, period):
       await Clockcycles(dut.clk, 1, False);
     # Check one period
     for i in range(period,0,-1):
