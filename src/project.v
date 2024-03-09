@@ -53,8 +53,8 @@ module tt_um_example (
                 // decrement
                 if (digit1 != 0) digit1 <= digit1 - 4'd1;
                 else begin
-                    digit1 <= 4'b9;
-                    if (digit10 == 0) digit10 <= 4'd9; else digit10 <= digit10 - 4'b1;
+                    digit1 <= 4'd9;
+                    if (digit10 == 0) digit10 <= 4'd9; else digit10 <= digit10 - 4'd1;
                 end
             end
         end
