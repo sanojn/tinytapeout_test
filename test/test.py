@@ -36,25 +36,34 @@ async def test_adder(dut):
   dut.rst_n.value = 0
   await ClockCycles(dut.clk, 10)
   dut.rst_n.value = 1
+  assert dut.uo_out.value == hex(1)
 
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
   dut.ui_in.value = 0
   dut.uio_in.value = 0
   
+  dut._log.info("Testing no button")
   await testCycle(1)
+  dut._log.info("Testing btn4")
   dut.u_in.value = 1 # press btn4
   await testCycle(4)
+  dut._log.info("Testing btn6")
   dut.u_in.value = 2 # press btn6
   await testCycle(6)
+  dut._log.info("Testing btn8")
   dut.u_in.value = 4 # press btn8
   await testCycle(8)
+  dut._log.info("Testing btn10")
   dut.u_in.value = 8 # press btn10
   await testCycle(10)
+  dut._log.info("Testing btn12")
   dut.u_in.value = 16 # press btn12
   await testCycle(12)
+  dut._log.info("Testing btn20")
   dut.u_in.value = 32 # press btn20
   await testCycle(20)
+  dut._log.info("Testing btn100")
   dut.u_in.value = 32 # press btn100
   await testCycle(100)
   
