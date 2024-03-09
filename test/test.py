@@ -64,7 +64,7 @@ async def test_adder(dut):
   dut.ui_in.value = 32 # press btn20
   await testCycle(dut,20)
   dut._log.info("Testing btn100")
-  dut.ui_in.value = 32 # press btn100
+  dut.ui_in.value = 64 # press btn100
   await testCycle(dut,100)
   
   dut._log.info("End testbench")
