@@ -25,7 +25,8 @@ module tt_um_example (
     // Prescaler provides a one clock-cycle pulse at 32 Hz
     reg [9:0] prescaler;
     always @(posedge clk)
-        prescaler = prescaler + 1'd1;
+        if (!rst_sync) prescaler <= 10'd0;
+        else prescaler <= prescaler + 1'd1;
     wire tick;
     assign tick = prescaler == 10'd0;
     
