@@ -10,11 +10,11 @@ def hex(n): # Return binary integer equivalent of 2 BCD digits
 
 async def testCycle(dut,period):
     # Check one period
-    for i in range(period,period,-1):
+    for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
       assert dut.uo_out.value == hex(i)
     # Check one more period
-    for i in range(period,period,-1):
+    for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
       assert dut.uo_out.value == hex(i)
     # Multiple cycles
