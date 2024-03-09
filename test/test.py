@@ -38,7 +38,11 @@ async def testCycle(dut,period):
       assert dut.uo_out.value == hex(period-1) # The debouncer changes state as we roll down once more
       await ClockCycles(dut.clk,1,False)
       assert dut.uo_out.value == hex(period-1) # And the counter should stop now
-
+      await RisingEdge(dut.user_project.tick)  # Wait a while so the debouncer knows the button is released
+      assert dut.uo_out.value == hex(period-1) # Verify that the counter hasn't moved
+      await ClockCycles(dut.clk, 7, False)
+      assert dut.uo_out.value == hex(period-1) # Verify that the counter hasn't moved
+      
 @cocotb.test()
 async def test_adder(dut):
   dut._log.info("Start testbench")
