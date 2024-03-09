@@ -30,13 +30,13 @@ module tt_um_example (
     assign tick = prescaler == 10'd0;
     
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[0]), .debounced(btn4));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[1]), .debounced(btn6));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[2]), .debounced(btn8));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[3]), .debounced(btn10));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[4]), .debounced(btn12));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[5]), .debounced(btn20));
-    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[6]), .debounced(btn100));
+    debouncer Btn4_deb  (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[0]), .debounced(btn4));
+    debouncer Btn6_deb  (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[1]), .debounced(btn6));
+    debouncer Btn7_deb  (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[2]), .debounced(btn8));
+    debouncer Btn10_deb (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[3]), .debounced(btn10));
+    debouncer Btn12_deb (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[4]), .debounced(btn12));
+    debouncer Btn20_deb (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[5]), .debounced(btn20));
+    debouncer Btn100_deb(.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[6]), .debounced(btn100));
     
     wire anybtn;
     assign anybtn = btn4 | btn6 | btn8 | btn10 | btn12 | btn20 | btn100;
