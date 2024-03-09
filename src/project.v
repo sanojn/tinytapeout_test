@@ -79,7 +79,7 @@ module tt_um_example (
          .csb0(ui_in[0]),
          .web0(ui_in[1]),
          .wmask0(1'b1),
-         .addr0({uio_in[7:0],ui_in[3:2]),
+         .addr0({uio_in[7:0],ui_in[3:2]}),
          .din0({digit1,digit10}),
          .dout0(uio_out),
 // Port 1: R
