@@ -43,11 +43,11 @@ module tt_um_example (
     always @(posedge clk)
         if (anybtn) begin
             if (digit10 == 4'd0 && digit1 == 4'd1 && !btn100) begin
-                if      (btn4)   begin digit10 <= 0; digit1 <= 4 end
-                else if (btn6)   begin digit10 <= 0; digit1 <= 6 end
-                else if (btn8)   begin digit10 <= 0; digit1 <= 8 end
-                else if (btn10)  begin digit10 <= 1; digit1 <= 0 end
-                else if (btn20)  begin digit10 <= 2; digit1 <= 0 end
+                if      (btn4)   begin digit10 <= 4'd0; digit1 <= 4'd4 end
+                else if (btn6)   begin digit10 <= 4'd0; digit1 <= 4'd6 end
+                else if (btn8)   begin digit10 <= 4'd0; digit1 <= 4'd8 end
+                else if (btn10)  begin digit10 <= 4'd1; digit1 <= 4'd0 end
+                else if (btn20)  begin digit10 <= 4'd2; digit1 <= 4'd0 end
             end
             else begin
                 // decrement
