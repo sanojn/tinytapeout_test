@@ -1,6 +1,5 @@
 module debouncer (
     input wire clk,
-    input wire rst_sync,
     input wire tick,
     input wire button,
     output wire debounced
