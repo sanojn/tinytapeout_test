@@ -27,7 +27,7 @@ async def testCycle(dut,period):
     await ClockCycles(dut.clk, 3*period, False)
     assert dut.uo_out.value == hex(1)
     # Release button and verify that counting stops
-    dut.ui_in = 0;
+    dut.ui_in.value = 0;
     await ClockCycles(dut,clk,False) # Allow for synch delay
     assert dut.uo_out.value == hex(period) # Counter should have rolled over 
     await ClockCycles(dut,clk,False)
