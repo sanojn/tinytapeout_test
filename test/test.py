@@ -11,7 +11,8 @@ def hex(n): # Return a binary octet with 2 BCD digits
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
-    if (dut.tick==0) await RisingEdge(dut.tick)
+    if (dut.tick==0):
+      await RisingEdge(dut.tick)
     await RisingEdge(dut.tick)
     # Check one period
     for i in range(period,0,-1):
