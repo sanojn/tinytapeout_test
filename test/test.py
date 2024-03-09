@@ -28,10 +28,12 @@ async def testCycle(dut,period):
     assert dut.uo_out.value == hex(1)
     # Release button and verify that counting stops
     dut.ui_in.value = 0;
-    await ClockCycles(dut,clk,False) # Allow for synch delay
+    await ClockCycles(dut.clk,1,False) # Allow for synch delay
     assert dut.uo_out.value == hex(period) # Counter should have rolled over 
-    await ClockCycles(dut,clk,False)
-    assert dut.uo_out.value == hex(period) # And should stay there
+    await ClockCycles(dut.clk,1,False)
+    assert dut.uo_out.value == hex(period) # But should stop now
+    await ClockCycles(dut.clk,1,False)
+    assert dut.uo_out.value == hex(period) # But should stop now
 
 @cocotb.test()
 async def test_adder(dut):
