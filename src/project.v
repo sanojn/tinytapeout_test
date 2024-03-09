@@ -41,7 +41,10 @@ module tt_um_example (
     
     reg [4:0] digit1, digit10;
     always @(posedge clk)
-        if (anybtn) begin
+        if (rst_sync==0) begin
+          digit10 = 4'd0; digit1 = 4'd1;
+        end
+        else if (anybtn) begin
             if (digit10 == 4'd0 && digit1 == 4'd1 && !btn100) begin
                 if      (btn4)   begin digit10 <= 4'd0; digit1 <= 4'd4; end
                 else if (btn6)   begin digit10 <= 4'd0; digit1 <= 4'd6; end
