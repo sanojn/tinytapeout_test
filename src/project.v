@@ -65,8 +65,19 @@ module tt_um_example (
         end
 
     // All output pins must be assigned. If not used, assign to 0.
-    assign uo_out[7:0] = {digit10, digit1};
-    assign uio_out = 8'b0;
-    assign uio_oe  = 8'b0;
-    
+    //assign uo_out[7:0] = {digit10, digit1};
+    //assign uio_out = 8'b0;
+    //assign uio_oe  = 8'b0;
+
+     sky130_sram_1kbyte_1rw1r_8x1024_8(
+`ifdef USE_POWER_PINS
+    vccd1,
+    vssd1,
+`endif
+// Port 0: RW
+         clk0(clk),csb0(ui_in[0]),web0(ui_in[1]),wmask0(1'b1),addr0({uio_in[7:0],ui_in[3:2]),din0(digit1,digit10),dout0(uio_out),
+// Port 1: R
+                                                                     clk1(clk),csb1(ui_in[4]),addr1(digit1,digit10),dout1(uio_oe)
+  );
+        
 endmodule
