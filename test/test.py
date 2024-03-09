@@ -25,7 +25,7 @@ async def testCycle(period):
 async def test_adder(dut):
   dut._log.info("Start testbench")
   
-  clock = Clock(dut.clk, 1000000/32768, units="us")
+  clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
 
   # Reset
