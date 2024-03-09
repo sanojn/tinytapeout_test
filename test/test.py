@@ -5,8 +5,8 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
 
-def hex(n): # Return binary integer equivalent of 2 BCD digits
-  return (n//10)*16 + n%10;
+def hex(n): # Return a binary octet with 2 BCD digits
+  return ((n%100)//10)*16 + n%10;
 
 async def testCycle(dut,period):
     # Check one period
