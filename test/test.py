@@ -46,25 +46,25 @@ async def test_adder(dut):
   dut._log.info("Testing no button")
   await testCycle(dut,1)
   dut._log.info("Testing btn4")
-  dut.u_in.value = 1 # press btn4
+  dut.ui_in.value = 1 # press btn4
   await testCycle(dut,4)
   dut._log.info("Testing btn6")
-  dut.u_in.value = 2 # press btn6
+  dut.ui_in.value = 2 # press btn6
   await testCycle(dut,6)
   dut._log.info("Testing btn8")
-  dut.u_in.value = 4 # press btn8
+  dut.ui_in.value = 4 # press btn8
   await testCycle(dut,8)
   dut._log.info("Testing btn10")
-  dut.u_in.value = 8 # press btn10
+  dut.ui_in.value = 8 # press btn10
   await testCycle(dut,10)
   dut._log.info("Testing btn12")
-  dut.u_in.value = 16 # press btn12
+  dut.ui_in.value = 16 # press btn12
   await testCycle(dut,12)
   dut._log.info("Testing btn20")
-  dut.u_in.value = 32 # press btn20
+  dut.ui_in.value = 32 # press btn20
   await testCycle(dut,20)
   dut._log.info("Testing btn100")
-  dut.u_in.value = 32 # press btn100
+  dut.ui_in.value = 32 # press btn100
   await testCycle(dut,100)
   
   dut._log.info("End testbench")
