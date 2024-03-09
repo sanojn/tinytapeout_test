@@ -8,7 +8,7 @@ from cocotb.triggers import ClockCycles
 def hex(n): # Return binary integer equivalent of 2 BCD digits
   return (n//10)*16 + n%10;
 
-async def testCycle(period):
+async def testCycle(dut,period):
     # Check one period
     for i in range(period,period,-1):
       await ClockCycles(dut.clk, 1)
@@ -44,27 +44,27 @@ async def test_adder(dut):
   dut.uio_in.value = 0
   
   dut._log.info("Testing no button")
-  await testCycle(1)
+  await testCycle(dut,1)
   dut._log.info("Testing btn4")
   dut.u_in.value = 1 # press btn4
-  await testCycle(4)
+  await testCycle(dut,4)
   dut._log.info("Testing btn6")
   dut.u_in.value = 2 # press btn6
-  await testCycle(6)
+  await testCycle(dut,6)
   dut._log.info("Testing btn8")
   dut.u_in.value = 4 # press btn8
-  await testCycle(8)
+  await testCycle(dut,8)
   dut._log.info("Testing btn10")
   dut.u_in.value = 8 # press btn10
-  await testCycle(10)
+  await testCycle(dut,10)
   dut._log.info("Testing btn12")
   dut.u_in.value = 16 # press btn12
-  await testCycle(12)
+  await testCycle(dut,12)
   dut._log.info("Testing btn20")
   dut.u_in.value = 32 # press btn20
-  await testCycle(20)
+  await testCycle(dut,20)
   dut._log.info("Testing btn100")
   dut.u_in.value = 32 # press btn100
-  await testCycle(100)
+  await testCycle(dut,100)
   
   dut._log.info("End testbench")
