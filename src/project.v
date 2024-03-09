@@ -60,7 +60,7 @@ module tt_um_example (
         end
 
     // All output pins must be assigned. If not used, assign to 0.
-    assign uo_out[7:0] = {digit10, digit1}
+    assign uo_out[7:0] = {digit10, digit1};
     assign uio_out = 8'b0;
     assign uio_oe  = 8'b0;
     
