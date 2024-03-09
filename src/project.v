@@ -5,36 +5,6 @@
 
 `define default_netname none
 
-module debouncer (
-    input wire clk,
-    input wire rst_sync,
-    input wire tick,
-    input wire button,
-    output wire debounced
-);
-    // Synchronize and debounce input signals
-    // Clock cycle is several ms, so single flop is sufficient for metastability avoidance
-    reg button_d;
-    reg [1:0] state;
-    parameter Idle     = 2'b00;
-    parameter Glitch   = 2'b01;
-    parameter Pressed  = 2'b11;
-    parameter Released = 2'b10;
-    always @(posedge clk) begin
-        button_d <= button;
-        case (state)
-            Idle: if (tick & button_d) state <= 2'b01;  
-                  
-            Glitch: if (!button_d) state <= 2'b00;
-                    else if (tick) state <= 2'b11;
-                    
-            Pressed: if (!button_d) state <= 2'b11;
-                     
-            Released: if (tick) state <= 2'b00;
-        endcase
-        debounced <= (state == 2'b11);
-endmodule
-
 module tt_um_example (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
@@ -61,13 +31,12 @@ module tt_um_example (
     
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
     debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[0]), .debounced(btn4));
-    assign btn4 = ui_in[0];
-    assign btn6 = ui_in[1];
-    assign btn8 = ui_in[2];
-    assign btn10 = ui_in[3];
-    assign btn12 = ui_in[4];
-    assign btn20 = ui_in[5];
-    assign btn100 = ui_in[6];
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[1]), .debounced(btn6));
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[2]), .debounced(btn8));
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[3]), .debounced(btn10));
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[4]), .debounced(btn12));
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[5]), .debounced(btn20));
+    debouncer (.clk(clk), .rst(rst_sync), .en(tick), .button(ui_in[6]), .debounced(btn100));
     
     wire anybtn;
     assign anybtn = btn4 | btn6 | btn8 | btn10 | btn12 | btn20 | btn100;
