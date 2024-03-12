@@ -27,7 +27,7 @@ module tt_um_example (
     always @(posedge clk)
         if (!rst_sync) prescaler <= 10'd0;
         else prescaler <= prescaler + 1'd1;
-    (* keep *) wire tick;
+    (* keep=true *) wire tick;
     assign tick = prescaler == 10'd0;
     
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
