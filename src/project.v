@@ -86,9 +86,8 @@ module tt_um_example (
     assign uo_out = ( uio_in[0] ? displaysegments : ~displaysegments );
     
     // when uio_in[1] = 1, multiplex outputs are inverted for direct drive common anode displays
-    uio_out[0] =  ( uio_in[0] ? showDigit1  : ~showDigit1  );   // Digit1
-    uio_out[1] =  ( uio_in[0] ? showDigit10 : ~showDigit10 );   // Digit10
-
+    assign uio_out[0] =  ( uio_in[0] ? showDigit1  : ~showDigit1  );   // Digit1
+    assign uio_out[1] =  ( uio_in[0] ? showDigit10 : ~showDigit10 );   // Digit10
     
     // All output pins must be assigned. If not used, assign to 0.
     assign uo_out[7] = 1'b0; // decimal point
