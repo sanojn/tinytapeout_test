@@ -66,9 +66,33 @@ module tt_um_example (
             end
         end
 
+    // Multiplex digits and encode for seven segment
+    wire showDigit1, showDigit10;
+    assign showDigit1  =  clk & ~anybutton; // Show digit1 when clock is high and all buttons are released
+    assign showDigit10 = ~clk & ~anybutton & digit10!=4'b0; // Show when clock is low, also blank zeroes
+    
+    wire [3:0] displaydigit;
+    wire [7:0] displaysegments;
+    assign displaydigit = (clk? digit1 : digit10); // display muxing uses the 32kHz clk
+    seg7_digitsonly outputdecoder(digit1, displaysegments[6:0]);
+    assign displaysegments[7] = 1'b0;
+
+    
+    // Now prepare the actual outputs, using uio_in[1:0] to
+    // control inversion for common anode or cathode displays
+    // uio_in[1:0] = 00 assumes a common cathode display.
+    
+    // when uio_in[0] = 1, segment outputs are inverted for common anode displays
+    uo_out <= ( uio_in[0] ? displaysegments : ~displaysegments );
+    
+    // when uio_in[1] = 1, multiplex outputs are inverted for direct drive common anode displays
+    uio_out[0] =  ( uio_in[0] ? showDigit1  : ~showDigit1  );   // Digit1
+    uio_out[1] =  ( uio_in[0] ? showDigit10 : ~showDigit10 );   // Digit10
+
+    
     // All output pins must be assigned. If not used, assign to 0.
-    assign uo_out[7:0] = {digit10, digit1};
-    assign uio_out = 8'b0;
-    assign uio_oe  = 8'b0;
+    assign uo_out[7] = 1'b0; // decimal point
+    assign uio_out[7:2] = 6'b0;
+    assign uio_oe  = 8'b00000011;
 
 endmodule
