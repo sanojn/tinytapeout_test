@@ -1,6 +1,6 @@
 module seg7_digitsonly(
   input  [3:0] digit,
-  output [6:0] display // Segments g through a, in that order
+  output reg [6:0] display // Segments g through a, in that order
 );
 
   always @(*) begin
