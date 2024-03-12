@@ -17,6 +17,7 @@ project:
   source_files:        
     - "project.v"
     - "debouncer.v"
+    - "seg7_digitsonly.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
