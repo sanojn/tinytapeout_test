@@ -68,8 +68,8 @@ module tt_um_example (
 
     // Multiplex digits and encode for seven segment
     wire showDigit1, showDigit10;
-    assign showDigit1  =  clk & ~anybutton; // Show digit1 when clock is high and all buttons are released
-    assign showDigit10 = ~clk & ~anybutton & digit10!=4'b0; // Show when clock is low, also blank zeroes
+    assign showDigit1  =  clk & ~anybtn; // Show digit1 when clock is high and all buttons are released
+    assign showDigit10 = ~clk & ~anybtn & digit10!=4'b0; // Show when clock is low, also blank zeroes
     
     wire [3:0] displaydigit;
     wire [7:0] displaysegments;
