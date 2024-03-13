@@ -41,12 +41,12 @@ module tb ();
       .rst_n  (rst_n)     // not reset
   );
 
-  # Check which segments are lit
-  # common signals are active when equal to uio_in[7]
+  // Check which segments are lit
+  // common signals are active when equal to uio_in[7]
   wire digit1_active, digit10_active;
   assign digit1_active  = ( uio_out[0] == uio_in[7] ) && uio_oe[0]==1'b1;
   assign digit10_active = ( uio_out[1] == uio_in[7] ) && uio_oe[1]==1'b1;
-  # segments are active when equal to uio_in[6]
+  // segments are active when equal to uio_in[6]
   wire [7:0] litsegments;
   assign litsegments = ( uio_in[6] ? uo_out : ~uo_out );
    
