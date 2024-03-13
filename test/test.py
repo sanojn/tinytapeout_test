@@ -61,7 +61,7 @@ async def testCycle(dut,period):
 #      await(Timer(1,units='us'))  // Allow outputs to settle
 
 def noDigitsShown(): # Check that the 'common' signal of both displays are off
-  return ( dut.digit1_active.value==0 && digit10_active.value==0 )
+  return ( dut.digit1_active.value==0 & digit10_active.value==0 )
 
 @cocotb.coroutine()
 def digitsShownCheck(dut):
