@@ -83,7 +83,7 @@ module tt_um_example (
     // uio_in[1:0] = 00 assumes a common cathode display.
     
     // when uio_in[0] = 1, segment outputs are inverted for common anode displays
-    assign uo_out = ( uio_in[0] ? displaysegments : ~displaysegments );
+    assign uo_out = ( uio_in[0] ? ~displaysegments : displaysegments );
     
     // when uio_in[1] = 1, multiplex outputs are inverted for direct drive common anode displays
     assign uio_out[0] =  ( uio_in[0] ? showDigit1  : ~showDigit1  );   // Digit1
