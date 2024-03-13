@@ -11,7 +11,7 @@ from cocotb.triggers import Edge
 def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
 
-def internalDigits(): # Return the two internal digit counters as an octet
+def internalDigits(dut): # Return the two internal digit counters as an octet
   return dut.user_project.Digit10*16 + dut.user_project.Digit1
 
 async def testCycle(dut,period):
@@ -23,36 +23,36 @@ async def testCycle(dut,period):
     await ClockCycles(dut.clk, 2, False) # Let the debounce FSM see the tick
     # Now the counter should be rolling
     # Wait until it's 1 to simplify tests
-    if (internalDigits()!=hex(1)):
+    if (internalDigits(dut)!=hex(1)):
       for i in range(0,period):
         await ClockCycles(dut.clk, 1, False)
-        if (internalDigits()==hex(1)):
+        if (internalDigits(dut)==hex(1)):
           break;
     # Check one period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
-      assert internalDigits() == hex(i)
+      assert internalDigits(dut) == hex(i)
     # Check one more period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
-      assert internalDigits() == hex(i)
+      assert internalDigits(dut) == hex(i)
     # Multiple cycles
     await ClockCycles(dut.clk, 3*period, False)
-    assert internalDigits() == hex(1)
+    assert internalDigits(dut) == hex(1)
     # Run the last part only if we're actually pressing a button
     if (period!=1):
       # Release button and verify that counting stops
       dut.ui_in.value = 0;
       await ClockCycles(dut.clk,1,False) # Allow for synch delay
-      assert internalDigits() == hex(period) # Counter should have rolled over 
+      assert internalDigits(dut) == hex(period) # Counter should have rolled over 
       await ClockCycles(dut.clk,1,False)
-      assert internalDigits() == hex(period-1) # The debouncer changes state as we roll down once more
+      assert internalDigits(dut) == hex(period-1) # The debouncer changes state as we roll down once more
       await ClockCycles(dut.clk,1,False)
-      assert internalDigits() == hex(period-1) # And the counter should stop now
+      assert internalDigits(dut) == hex(period-1) # And the counter should stop now
       await RisingEdge(dut.user_project.tick)  # Wait a while so the debouncer knows the button is released
-      assert internalDigits() == hex(period-1) # Verify that the counter hasn't moved
+      assert internalDigits(dut) == hex(period-1) # Verify that the counter hasn't moved
       await ClockCycles(dut.clk, 7, False)
-      assert internalDigits() == hex(period-1) # Verify that the counter hasn't moved
+      assert internalDigits(dut) == hex(period-1) # Verify that the counter hasn't moved
 
 # def sevenSegment_decode(display,activePhase):
 # @cocotb.coroutine()
@@ -75,7 +75,7 @@ async def test_adder(dut):
   dut.rst_n.value = 0
   await ClockCycles(dut.clk, 10, False)
   dut.rst_n.value = 1
-  assert internalDigits() == hex(1)
+  assert internalDigits(dut) == hex(1)
 
 #  sevenSegmentCheck_task = cocotb.start(sevenSegmentCheck())
 
