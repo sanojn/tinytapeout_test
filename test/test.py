@@ -14,11 +14,6 @@ def hex(n): # Return a binary octet with 2 BCD digits
 def internalDigits(dut): # Return the two internal digit counters as an octet
   return dut.user_project.digit10.value*16 + dut.user_project.digit1.value
 
-def noDigitsShown():
-    # Check that the 'common' signal of both displays are
-    # off depending on the phase signal uio_in[1]
-    return ( uio_in[1].value ? uio_out[1:0].value == 0 : uio_out[1:0].value == 3 )
-
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
@@ -37,7 +32,6 @@ async def testCycle(dut,period):
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
       assert internalDigits(dut) == hex(i)
-      assert noDigitsShown()
     # Check one more period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
@@ -54,7 +48,7 @@ async def testCycle(dut,period):
       await ClockCycles(dut.clk,1,False)
       assert internalDigits(dut) == hex(period-1) # The debouncer changes state as we roll down once more
       await ClockCycles(dut.clk,1,False)
-      assert internalDigits(dut) == hex(period-1) # And the counter should stop now
+      assert internalDigits(dut) == hex(period-1) # The counter should stopped now
       await RisingEdge(dut.user_project.tick)  # Wait a while so the debouncer knows the button is released
       assert internalDigits(dut) == hex(period-1) # Verify that the counter hasn't moved
       await ClockCycles(dut.clk, 7, False)
@@ -65,7 +59,19 @@ async def testCycle(dut,period):
 # def sevenSegmentCheck():
 #      await Edge(uio_out[0])
 #      await(Timer(1,units='us'))  // Allow outputs to settle
-       
+
+def noDigitsShown(): # Check that the 'common' signal of both displays are off
+  return ( dut.digit1_active.value==0 && digit10_active.value==0 )
+
+@cocotb.coroutine()
+def digitsShownCheck(dut):
+   while (dut.ui_in.value%128 != 0): # some button is pressed
+     await Timer(1, units='ms');
+     if (dut.ui_in.value%128 != 0) assert noDigitsShown();
+   while (dut.ui_in.value%128 == 0): # no button is pressed
+     await Timer(1, units='ms');
+     if (dut.ui_in.value%128 == 0) assert !noDigitsShown();
+
 @cocotb.test()
 async def test_adder(dut):
   dut._log.info("Start testbench")
@@ -83,7 +89,7 @@ async def test_adder(dut):
   dut.rst_n.value = 1
   assert internalDigits(dut) == hex(1)
 
-#  sevenSegmentCheck_task = cocotb.start(sevenSegmentCheck())
+  digitsShown_task = cocotb.start(digitsShownCheck(dut))
 
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
