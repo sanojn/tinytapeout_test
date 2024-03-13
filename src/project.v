@@ -74,7 +74,7 @@ module tt_um_example (
     wire [3:0] displaydigit;
     wire [7:0] displaysegments;
     assign displaydigit = (clk? digit1 : digit10); // display muxing uses the 32kHz clk
-    seg7_digitsonly outputdecoder(displaydigit1, displaysegments[6:0]);
+    seg7_digitsonly outputdecoder(displaydigit, displaysegments[6:0]);
     assign displaysegments[7] = 1'b0;
 
     
