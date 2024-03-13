@@ -77,20 +77,19 @@ module tt_um_example (
     seg7_digitsonly outputdecoder(displaydigit, displaysegments[6:0]);
     assign displaysegments[7] = 1'b0;
 
-    
-    // Now prepare the actual outputs, using uio_in[1:0] to
+    // Now prepare the actual outputs, using uio_in[7:6] to
     // control inversion for common anode or cathode displays
-    // uio_in[1:0] = 00 assumes a common cathode display.
-    
-    // when uio_in[0] = 1, segment outputs are inverted for common anode displays
-    assign uo_out = ( uio_in[0] ? ~displaysegments : displaysegments );
-    
-    // when uio_in[1] = 1, multiplex outputs are inverted for direct drive common anode displays
-    assign uio_out[0] =  ( uio_in[0] ? showDigit1  : ~showDigit1  );   // Digit1
-    assign uio_out[1] =  ( uio_in[0] ? showDigit10 : ~showDigit10 );   // Digit10
+    // uio_in[7] sets the active level of the 'common' signals
+    // uio_in[6] sets the active level for the segment signals
+    // uio_in[7:6] = 01 is appropriate for a common cathode display
+    // uio_in[7:6] = 10 is appropriate for a common anode display
+    // uio_in[7:6] = 00 is apropriate for a common anode display with an inverting driver for the 'common' signal
+    assign uo_out = ( uio_in[6] ? displaysegments : ~displaysegments );
+    assign uio_out[0] =  ( uio_in[7] ? showDigit1  : ~showDigit1  );   // Digit1 common
+    assign uio_out[1] =  ( uio_in[7] ? showDigit10 : ~showDigit10 );   // Digit10 common
     
     // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out[7:2] = 6'b0;
+    assign uio_out[5:2] = 4'b0;
     assign uio_oe  = 8'b00000011;
 
 endmodule
