@@ -12,7 +12,7 @@ def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
 
 def internalDigits(dut): # Return the two internal digit counters as an octet
-  return dut.user_project.Digit10*16 + dut.user_project.Digit1
+  return dut.user_project.digit10*16 + dut.user_project.digit1
 
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
