@@ -14,6 +14,11 @@ def hex(n): # Return a binary octet with 2 BCD digits
 def internalDigits(dut): # Return the two internal digit counters as an octet
   return dut.user_project.digit10.value*16 + dut.user_project.digit1.value
 
+def noDigitsShown():
+    # Check that the 'common' signal of both displays are
+    # off depending on the phase signal uio_in[1]
+    return ( uio_in[1].value ? uio_out[1:0].value == 0 : uio_out[1:0].value == 3 )
+
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
@@ -32,6 +37,7 @@ async def testCycle(dut,period):
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
       assert internalDigits(dut) == hex(i)
+      assert noDigitsShown()
     # Check one more period
     for i in range(period,0,-1):
       await ClockCycles(dut.clk, 1, False)
