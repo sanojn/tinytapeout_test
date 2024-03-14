@@ -85,7 +85,7 @@ module tt_um_example (
     // uio_in[7:6] = 10 is appropriate for a common anode display
     // uio_in[7:6] = 00 is apropriate for a common anode display with an inverting driver for the 'common' signal
     assign uo_out = ( uio_in[6] ? displaysegments : ~displaysegments );
-    assign uio_out[0] =  ( ~uio_in[7] ? showDigit1  : ~showDigit1  );   // Digit1 common
+    assign uio_out[0] =  ( uio_in[7] ? showDigit1  : ~showDigit1  );   // Digit1 common
     assign uio_out[1] =  ( uio_in[7] ? showDigit10 : ~showDigit10 );   // Digit10 common
     
     // All output pins must be assigned. If not used, assign to 0.
