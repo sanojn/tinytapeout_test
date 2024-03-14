@@ -138,7 +138,7 @@ async def test_adder(dut):
   dut._log.info("Test")
   dut.ui_in.value = 0
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
-  testAllButtons(dut,activeLevel)
+  testAllButtons(dut,activeLevel=1)
   #dut.uio_in.value = 32 # Configure buttons as active low, outputs as active low
   #testAllButtons(dut)
   #dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
