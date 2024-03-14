@@ -67,10 +67,10 @@ def noDigitsShown(dut): # Check that the 'common' signal of both displays are of
 async def digitsShownCheck(dut):
    while (dut.ui_in.value%128 != 0): # some button is pressed
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 != 0): assert noDigitsShown();
+     if (dut.ui_in.value%128 != 0): assert noDigitsShown(dut);
    while (dut.ui_in.value%128 == 0): # no button is pressed
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 == 0): assert not noDigitsShown();
+     if (dut.ui_in.value%128 == 0): assert not noDigitsShown(dut);
 
 @cocotb.test()
 async def test_adder(dut):
