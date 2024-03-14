@@ -15,7 +15,7 @@ def hex(n): # Return a binary octet with 2 BCD digits
 def internalDigits(dut): # Return the two internal digit counters as an octet
   return dut.user_project.digit10.value*16 + dut.user_project.digit1.value
 
-def releaseButtons(activeLevel,dut):
+def releaseButtons(dut,activeLevel):
   if (activeLevel==1):
     dut.ui_in.value = 0
   else:
@@ -56,7 +56,7 @@ async def testCycle(dut,period,activeLevel):
     # Run the last part only if we're actually pressing a button
     if (period!=1):
       # Release button and verify that counting stops
-      releaseButtons(activeLevel,dut);
+      releaseButtons(dut,activeLevel);
       await ClockCycles(dut.clk,1,False) # Allow for synch delay
       assert internalDigits(dut) == hex(period) # Counter should have rolled over 
       await ClockCycles(dut.clk,1,False)
@@ -123,6 +123,11 @@ async def reset(dut):
   dut.rst_n.value = 1
   assert internalDigits(dut) == hex(1)
 
+
+
+#############################################################################
+#### Tests begin here #######################################################
+
 @cocotb.test()
 async def test_dice_activehighbuttons(dut):
   dut._log.info("Testing active high buttons")
@@ -130,7 +135,7 @@ async def test_dice_activehighbuttons(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
-  releaseButtons(activeLevel=1,dut)
+  releaseButtons(1,activeLevel=1)
   await reset(dut)
   digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
   dut._log.info("Running test")
@@ -144,7 +149,7 @@ async def test_dice_activelowbuttons(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value =  0 # Configure buttons as active low, outputs as active low
-  releaseButtons(activeLevel=0,dut)
+  releaseButtons(dut,activeLevel=1)
   await reset(dut)
   digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
   dut._log.info("Running test")
@@ -158,7 +163,7 @@ async def test_dice_activehighsegments(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 64+32 # Configure buttons as active high, segment outputs as active high
-  releaseButtons(activeLevel=1,dut)
+  releaseButtons(1,activeLevel=1)
   await reset(dut)
   digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
   dut._log.info("Running test")
@@ -172,7 +177,7 @@ async def test_dice_activehighcommons(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 128+32 # Configure buttons as active high, common outputs as active high
-  releaseButtons(activeLevel=1,dut)
+  releaseButtons(dut,activeLevel=1)
   await reset(dut)
   digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
   dut._log.info("Running test")
