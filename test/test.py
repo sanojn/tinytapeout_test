@@ -65,12 +65,16 @@ def noDigitsShown(dut): # Check that the 'common' signal of both displays are of
   return ( dut.digit1_active.value==0 & dut.digit10_active.value==0 )
 
 async def digitsShownCheck(dut):
-   while (dut.ui_in.value%128 != 0): # some button is pressed
+   while (dut.ui_in.value%128 != 0): # some button is pressed, We shouldn't see any digits
      await Timer(1, units='ms');
      if (dut.ui_in.value%128 != 0): assert noDigitsShown(dut);
-   while (dut.ui_in.value%128 == 0): # no button is pressed
+   while (dut.ui_in.value%128 == 0): # no button is pressed, something should be shown, unless the left digit is blanked out
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 == 0): assert not noDigitsShown(dut);
+     if (dut.ui_in.value%128 == 0):
+         if noDigigtsShown(dut):  # if no digit is shown. Maybe this digit is blanked. Wait and check the other digit
+             await Edge(dut.clk);
+             await Timer(1, units='us');
+             assert not noDigitsShown(dut);
 
 @cocotb.test()
 async def test_adder(dut):
