@@ -6,11 +6,11 @@
 `define default_netname none
 
 module tt_um_example (
-    input  wire [7:0] ui_in,    // Dedicated inputs
-    output wire [7:0] uo_out,   // Dedicated outputs
-    input  wire [7:0] uio_in,   // IOs: Input path
-    output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
+    input  wire [7:0] ui_in,    // buttons
+    output wire [7:0] uo_out,   // 7segment signals
+    input  wire [7:0] uio_in,   // [7:5] configures IO polarity
+    output wire [7:0] uio_out,  // [1:0] 7segment common drives
+    output wire [7:0] uio_oe,   // IOs: Enable path
     input  wire       ena,      // will go high when the design is enabled
     input  wire       clk,      // clock, 32768 Hz
     input  wire       rst_n     // reset_n - low to reset
@@ -21,7 +21,7 @@ module tt_um_example (
     reg rst_sync1, rst_sync;
     always @(negedge clk)
         {rst_sync, rst_sync1} = {rst_sync1, rst_n};
-
+    
     // Prescaler provides a one clock-cycle pulse at 32 Hz
     reg [9:0] prescaler;
     always @(posedge clk)
@@ -29,15 +29,19 @@ module tt_um_example (
         else prescaler <= prescaler + 1'd1;
     (* keep *) wire tick;
     assign tick = prescaler == 10'd0;
-    
+
+    wire [7:0] button; # 
+    # Buttons are active high or low depending on uio_in[5]
+    assign button = ( uio_in[5] ? ui_in : ~ui_in );
+
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
-    debouncer Btn4_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[0]), .debounced(btn4));
-    debouncer Btn6_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[1]), .debounced(btn6));
-    debouncer Btn7_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[2]), .debounced(btn8));
-    debouncer Btn10_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[3]), .debounced(btn10));
-    debouncer Btn12_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[4]), .debounced(btn12));
-    debouncer Btn20_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[5]), .debounced(btn20));
-    debouncer Btn100_deb(.clk(clk), .rst_n(rst_sync), .tick(tick), .button(ui_in[6]), .debounced(btn100));
+    debouncer Btn4_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[0]), .debounced(btn4));
+    debouncer Btn6_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[1]), .debounced(btn6));
+    debouncer Btn7_deb  (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[2]), .debounced(btn8));
+    debouncer Btn10_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[3]), .debounced(btn10));
+    debouncer Btn12_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[4]), .debounced(btn12));
+    debouncer Btn20_deb (.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[5]), .debounced(btn20));
+    debouncer Btn100_deb(.clk(clk), .rst_n(rst_sync), .tick(tick), .button(button[6]), .debounced(btn100));
     
     wire anybtn;
     assign anybtn = btn4 | btn6 | btn8 | btn10 | btn12 | btn20 | btn100;
