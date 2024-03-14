@@ -17,9 +17,9 @@ def internalDigits(dut): # Return the two internal digit counters as an octet
 
 def releaseButtons(activeLevel,dut):
   if (activeLevel==1):
-    dut.ui_in.value == 0
+    dut.ui_in.value = 0
   else:
-    dut.ui_in.value == 0b1111111
+    dut.ui_in.value = 0b1111111
 
 def pressButton(btn,activeLevel,dut):
   temp = 1<<(btn-1);
@@ -62,7 +62,7 @@ async def testCycle(dut,period,activeLevel):
       await ClockCycles(dut.clk,1,False)
       assert internalDigits(dut) == hex(period-1) # The debouncer changes state as we roll down once more
       await ClockCycles(dut.clk,1,False)
-      assert internalDigits(dut) == hex(period-1) # The counter should stopped now
+      assert internalDigits(dut) == hex(period-1) # The counter should have stopped now
       await RisingEdge(dut.user_project.tick)  # Wait a while so the debouncer knows the button is released
       assert internalDigits(dut) == hex(period-1) # Verify that the counter hasn't moved
       await ClockCycles(dut.clk, 7, False)
