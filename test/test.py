@@ -118,7 +118,6 @@ async def reset(dut):
   dut._log.info("Reset")
   dut.ena.value = 1
   dut.rst_n.value = 0
-  dut.ui_in.value = 0
   await ClockCycles(dut.clk, 10, False)
   dut.rst_n.value = 1
   assert internalDigits(dut) == hex(1)
@@ -163,7 +162,7 @@ async def test_dice_activehighsegments(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 64+32 # Configure buttons as active high, segment outputs as active high
-  releaseButtons(1,activeLevel=1)
+  releaseButtons(dut,activeLevel=1)
   await reset(dut)
   digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
   dut._log.info("Running test")
