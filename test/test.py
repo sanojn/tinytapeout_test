@@ -88,7 +88,7 @@ async def test_adder(dut):
   dut.rst_n.value = 1
   assert internalDigits(dut) == hex(1)
 
-  digitsShown_task = cocotb.start(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
 
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
