@@ -98,7 +98,7 @@ async def test_adder(dut):
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
   dut.ui_in.value = 0
-  dut.uio_in.value = 0
+  dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
   
   dut._log.info("Testing no button")
   await testCycle(dut,1)
