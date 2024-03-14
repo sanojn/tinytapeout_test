@@ -15,7 +15,20 @@ def hex(n): # Return a binary octet with 2 BCD digits
 def internalDigits(dut): # Return the two internal digit counters as an octet
   return dut.user_project.digit10.value*16 + dut.user_project.digit1.value
 
-async def testCycle(dut,period):
+def releaseButtons(activeLevel,dut):
+  if (activeLevel==1):
+    dut.ui_in.value == 0
+  else:
+    dut.ui_in.value == 0b1111111
+
+def pressButton(btn,activeLevel,dut):
+  temp = 1<<(btn-1);
+  if (activeLevel==1):
+    dut.ui_in.value = temp
+  else:
+    dut.ui_in.value = 0b1111111 - temp
+
+async def testCycle(dut,period,activeLevel):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
     if (dut.user_project.tick.value==0):
@@ -43,7 +56,7 @@ async def testCycle(dut,period):
     # Run the last part only if we're actually pressing a button
     if (period!=1):
       # Release button and verify that counting stops
-      dut.ui_in.value = 0;
+      releaseButtons(activeLevel,dut);
       await ClockCycles(dut.clk,1,False) # Allow for synch delay
       assert internalDigits(dut) == hex(period) # Counter should have rolled over 
       await ClockCycles(dut.clk,1,False)
@@ -76,47 +89,33 @@ async def digitsShownCheck(dut):
              await Timer(1, units='us');
              assert not noDigitsShown(dut);
 
-def releaseButtons(activeLevel,dut):
-  if (activeLevel==1):
-    dut.ui_in.value == 0
-  else:
-    dut.ui_in.value == 0b1111111
-
-def pressButton(btn,activeLevel,dut):
-  temp = 1<<(btn-1);
-  if (activeLevel==1):
-    dut.ui_in.value = temp
-  else:
-    dut.ui_in.value = 0b1111111 - temp
-  
 async def testAllButtons(dut,activeLevel):
   dut._log.info("Testing no button")
-  await testCycle(dut,1)
+  await testCycle(dut,1,activeLevel)
   dut._log.info("Testing btn4")
   pressButton(1,activeLevel,dut);
-  await testCycle(dut,4)
+  await testCycle(dut,4,activeLevel)
   dut._log.info("Testing btn6")
   pressButton(2,activeLevel,dut);
-  await testCycle(dut,6)
+  await testCycle(dut,6,activeLevel)
   dut._log.info("Testing btn8")
   pressButton(3,activeLevel,dut);
-  await testCycle(dut,8)
+  await testCycle(dut,8,activeLevel)
   dut._log.info("Testing btn10")
   pressButton(4,activeLevel,dut);
-  await testCycle(dut,10)
+  await testCycle(dut,10,activeLevel)
   dut._log.info("Testing btn12")
   dut.ui_in.value = 16 # press btn12
-  await testCycle(dut,12)
+  await testCycle(dut,12,activeLevel)
   dut._log.info("Testing btn20")
   dut.ui_in.value = 32 # press btn20
-  await testCycle(dut,20)
+  await testCycle(dut,20,activeLevel)
   dut._log.info("Testing btn100")
   dut.ui_in.value = 64 # press btn100
-  await testCycle(dut,100)
-
+  await testCycle(dut,100,activeLevel)
 
 @cocotb.test()
-async def test_adder(dut):
+async def test_dice(dut):
   dut._log.info("Start testbench")
   
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
@@ -140,10 +139,10 @@ async def test_adder(dut):
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
   testAllButtons(dut,activeLevel=1)
   dut.uio_in.value =  0 # Configure buttons as active low, outputs as active low
-  testAllButtons(dut)
+  testAllButtons(dut,activeLevel=0)
   dut.uio_in.value = 64+32 # Configure buttons as active high, segment outputs as active high
-  testAllButtons(dut)
+  testAllButtons(dut,activeLevel=1)
   dut.uio_in.value = 128+32 # Configure buttons as active high, common outputs as active high
-  testAllButtons(dut)
+  testAllButtons(dut,activeLevel=1)
   
   dut._log.info("End testbench")
