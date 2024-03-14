@@ -137,12 +137,12 @@ async def test_dice(dut):
   dut._log.info("Test")
   dut.ui_in.value = 0
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
-  testAllButtons(dut,activeLevel=1)
+  await testAllButtons(dut,activeLevel=1)
   dut.uio_in.value =  0 # Configure buttons as active low, outputs as active low
-  testAllButtons(dut,activeLevel=0)
+  await testAllButtons(dut,activeLevel=0)
   dut.uio_in.value = 64+32 # Configure buttons as active high, segment outputs as active high
-  testAllButtons(dut,activeLevel=1)
+  await testAllButtons(dut,activeLevel=1)
   dut.uio_in.value = 128+32 # Configure buttons as active high, common outputs as active high
-  testAllButtons(dut,activeLevel=1)
+  await testAllButtons(dut,activeLevel=1)
   
   dut._log.info("End testbench")
