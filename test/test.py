@@ -76,6 +76,45 @@ async def digitsShownCheck(dut):
              await Timer(1, units='us');
              assert not noDigitsShown(dut);
 
+def releaseButtons(activeLevel,dut):
+  if (activeLevel==1):
+    dut.ui_in.value == 0
+  else:
+    dut.ui_in.value == 0b1111111
+
+def pressButton(btn,activeLevel,dut):
+  temp = 1<<(btn-1);
+  if (activeLevel==1):
+    dut.ui_in.value = temp
+  else:
+    dut.ui_in.value = 0b1111111 - temp
+  
+async def testAllButtons(dut,activeLevel):
+  dut._log.info("Testing no button")
+  await testCycle(dut,1)
+  dut._log.info("Testing btn4")
+  pressButton(1,activeLevel,dut);
+  await testCycle(dut,4)
+  dut._log.info("Testing btn6")
+  pressButton(2,activeLevel,dut);
+  await testCycle(dut,6)
+  dut._log.info("Testing btn8")
+  pressButton(3,activeLevel,dut);
+  await testCycle(dut,8)
+  dut._log.info("Testing btn10")
+  pressButton(4,activeLevel,dut);
+  await testCycle(dut,10)
+  dut._log.info("Testing btn12")
+  dut.ui_in.value = 16 # press btn12
+  await testCycle(dut,12)
+  dut._log.info("Testing btn20")
+  dut.ui_in.value = 32 # press btn20
+  await testCycle(dut,20)
+  dut._log.info("Testing btn100")
+  dut.ui_in.value = 64 # press btn100
+  await testCycle(dut,100)
+
+
 @cocotb.test()
 async def test_adder(dut):
   dut._log.info("Start testbench")
@@ -99,29 +138,10 @@ async def test_adder(dut):
   dut._log.info("Test")
   dut.ui_in.value = 0
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
-  
-  dut._log.info("Testing no button")
-  await testCycle(dut,1)
-  dut._log.info("Testing btn4")
-  dut.ui_in.value = 1 # press btn4
-  await testCycle(dut,4)
-  dut._log.info("Testing btn6")
-  dut.ui_in.value = 2 # press btn6
-  await testCycle(dut,6)
-  dut._log.info("Testing btn8")
-  dut.ui_in.value = 4 # press btn8
-  await testCycle(dut,8)
-  dut._log.info("Testing btn10")
-  dut.ui_in.value = 8 # press btn10
-  await testCycle(dut,10)
-  dut._log.info("Testing btn12")
-  dut.ui_in.value = 16 # press btn12
-  await testCycle(dut,12)
-  dut._log.info("Testing btn20")
-  dut.ui_in.value = 32 # press btn20
-  await testCycle(dut,20)
-  dut._log.info("Testing btn100")
-  dut.ui_in.value = 64 # press btn100
-  await testCycle(dut,100)
+  testAllButtons(dut,activeLevel)
+  #dut.uio_in.value = 32 # Configure buttons as active low, outputs as active low
+  #testAllButtons(dut)
+  #dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
+  #testAllButtons(dut)
   
   dut._log.info("End testbench")
