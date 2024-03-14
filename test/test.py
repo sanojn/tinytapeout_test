@@ -70,7 +70,7 @@ def digitsShownCheck(dut):
      if (dut.ui_in.value%128 != 0): assert noDigitsShown();
    while (dut.ui_in.value%128 == 0): # no button is pressed
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 == 0): assert !noDigitsShown();
+     if (dut.ui_in.value%128 == 0): assert not noDigitsShown();
 
 @cocotb.test()
 async def test_adder(dut):
