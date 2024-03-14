@@ -7,6 +7,7 @@ from cocotb.triggers import ClockCycles
 from cocotb.triggers import RisingEdge
 from cocotb.triggers import Trigger
 from cocotb.triggers import Edge
+from cocotb.triggers import Timer
 
 def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
