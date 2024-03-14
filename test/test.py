@@ -62,7 +62,7 @@ async def testCycle(dut,period):
 #      await(Timer(1,units='us'))  // Allow outputs to settle
 
 def noDigitsShown(dut): # Check that the 'common' signal of both displays are off
-  return ( dut.digit1_active.value==0 & digit10_active.value==0 )
+  return ( dut.digit1_active.value==0 & dut.digit10_active.value==0 )
 
 async def digitsShownCheck(dut):
    while (dut.ui_in.value%128 != 0): # some button is pressed
