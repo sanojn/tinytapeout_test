@@ -63,7 +63,6 @@ async def testCycle(dut,period):
 def noDigitsShown(): # Check that the 'common' signal of both displays are off
   return ( dut.digit1_active.value==0 & digit10_active.value==0 )
 
-@cocotb.coroutine()
 async def digitsShownCheck(dut):
    while (dut.ui_in.value%128 != 0): # some button is pressed
      await Timer(1, units='ms');
