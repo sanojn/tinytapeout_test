@@ -30,8 +30,8 @@ module tt_um_example (
     (* keep *) wire tick;
     assign tick = prescaler == 10'd0;
 
-    wire [7:0] button; # 
-    # Buttons are active high or low depending on uio_in[5]
+    wire [7:0] button;
+    // Buttons are active high or low depending on uio_in[5]
     assign button = ( uio_in[5] ? ui_in : ~ui_in );
 
     wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
