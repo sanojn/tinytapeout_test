@@ -61,7 +61,7 @@ async def testCycle(dut,period):
 #      await Edge(uio_out[0])
 #      await(Timer(1,units='us'))  // Allow outputs to settle
 
-def noDigitsShown(): # Check that the 'common' signal of both displays are off
+def noDigitsShown(dut): # Check that the 'common' signal of both displays are off
   return ( dut.digit1_active.value==0 & digit10_active.value==0 )
 
 async def digitsShownCheck(dut):
