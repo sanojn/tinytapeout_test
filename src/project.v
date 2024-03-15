@@ -93,7 +93,7 @@ module tt_um_example (
     assign uio_out[1] =  ( uio_in[7] ? showDigit10 : ~showDigit10 );   // Digit10 common
     
     // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out[5:2] = 4'b0;
+    assign uio_out[7:2] = 4'b0;
     assign uio_oe  = 8'b00000011;
 
 endmodule
