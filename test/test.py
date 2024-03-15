@@ -13,7 +13,7 @@ def hex(n): # Return a binary octet with 2 BCD digits
   return ((n%100)//10)*16 + n%10;
 
 def internalDigits(dut): # Return the two internal digit counters as an octet
-  return dut.user_project.digit10.value*16 + dut.user_project.digit1.value
+  return dut.digit10.value*16 + dut.digit1.value
 
 def releaseButtons(dut):
     dut.btn4.value = 0;
@@ -84,11 +84,11 @@ async def checkSegmentOutputs(dut):
   await Edge(dut.shownDigit);
   assert dut.shownDigit.value != 14;
   if (dut.digit1_active.value):
-    assert dut.shownDigit.value == dut.user_project.digit1.value;
+    assert dut.shownDigit.value == dut.digit1.value;
   elif (dut.digit10_active.value):
-    assert dut.shownDigit.value == dut.user_project.digit10.value;
+    assert dut.shownDigit.value == dut.digit10.value;
   else:
-    assert dut.user_project.digit10.value==0;
+    assert dut.digit10.value==0;
   
 
 async def testAllButtons(dut):
