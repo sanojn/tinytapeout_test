@@ -35,7 +35,7 @@ async def testCycle(dut,period):
     await ClockCycles(dut.clk,1,False)
     while (dut.user_project.tick.value==0):
       await ClockCycles(dut.clk,1,False)
-    await ClockCycles(dut.clk, 2, False) # Let the debounce FSM see the tick
+    await ClockCycles(dut.clk, 1, False) # Let the debounce FSM see the tick
     # Now the counter should be rolling
     # Wait until it's 1 to simplify tests
     if (internalDigits(dut)!=hex(1)):
