@@ -82,7 +82,7 @@ async def digitsShownCheck(dut):
 
 async def testAllButtons(dut):
   dut._log.info("Testing no button")
-  releaseButtons()
+  releaseButtons(dut)
   await testCycle(dut,1)
   dut._log.info("Testing btn4")
   dut.btn4.value = 1
