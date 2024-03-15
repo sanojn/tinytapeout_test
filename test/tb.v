@@ -55,6 +55,8 @@ module tb ();
   assign ui_in[5] = (uio_in[5] ? btn20 : ~btn20);
   assign ui_in[6] = (uio_in[5] ? btn100 : ~btn100);
   assign ui_in[7] = 1'b0;
+  wire anyButtonPressed;
+  assign anyButtonPressed = btn4 | btn6 | btn8 | btn10 | btn12 | btn20 | btn100;
 
   // Check which segments are lit
   // common signals are active when equal to uio_in[7]
