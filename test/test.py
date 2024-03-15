@@ -85,7 +85,7 @@ async def checkSegmentOutputs(dut):
   assert dut.shownDigit != 14;
   if (dut.digit1_active):
     assert dut.shownDigit.value == dut.user_project.digit1.value;
-  else if (dut.digit10_active):
+  elif (dut.digit10_active):
     assert dut.shownDigit.value == dut.user_project.digit10.value;
   else assert dut.user_project.digit10.value==0;
   
