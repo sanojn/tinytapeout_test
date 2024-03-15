@@ -64,8 +64,8 @@ async def testCycle(dut,period):
       await ClockCycles(dut.clk, 7, False)
       assert internalDigits(dut) == hex(period-1) # Verify that the counter hasn't moved
 
-def noDigitsShown(dut): # Check that the 'common' signal of both displays are off
-  return ( not dut.digit1_active.value & not dut.digit10_active.value )
+def noDigitsShown(dut): # Check if the 'common' signal of both displays are off
+  return ( not dut.digit1_active.value and not dut.digit10_active.value )
 
 async def digitsShownCheck(dut):
    while (dut.anyButtonPressed.value==1): # some button is pressed, We shouldn't see any digits
