@@ -81,11 +81,11 @@ async def checkDigitsShown(dut):
              assert not noDigitsShown(dut);
 
 async def checkSegmentOutputs(dut):
-  await Edge(dut.shownDigit);
+  await Edge(dut.shownDigit.value);
   assert dut.shownDigit != 14;
-  if (dut.digit1_active):
+  if (dut.digit1_active.value):
     assert dut.shownDigit.value == dut.user_project.digit1.value;
-  elif (dut.digit10_active):
+  elif (dut.digit10_active.value):
     assert dut.shownDigit.value == dut.user_project.digit10.value;
   else:
     assert dut.user_project.digit10.value==0;
