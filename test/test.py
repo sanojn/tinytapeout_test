@@ -67,7 +67,7 @@ async def testCycle(dut,period):
 def noDigitsShown(dut): # Check if the 'common' signal of both displays are off
   return ( not dut.digit1_active.value and not dut.digit10_active.value )
 
-async def digitsShownCheck(dut):
+async def checkDigitsShown(dut):
    while (dut.anyButtonPressed.value==1): # some button is pressed, We shouldn't see any digits
      await Timer(1, units='ms');
      if (dut.anyButtonPressed.value==1): # Check that button wasn't released before looking at the digit
@@ -79,6 +79,16 @@ async def digitsShownCheck(dut):
              await Edge(dut.clk);
              await Timer(1, units='us');
              assert not noDigitsShown(dut);
+
+async def checkSegmentOutputs(dut):
+  await Edge(dut.shownDigit);
+  assert dut.shownDigit != 14;
+  if (dut.digit1_active):
+    assert dut.shownDigit.value == dut.user_project.digit1.value;
+  else if (dut.digit10_active):
+    assert dut.shownDigit.value == dut.user_project.digit10.value;
+  else assert dut.user_project.digit10.value==0;
+  
 
 async def testAllButtons(dut):
   dut._log.info("Testing no button")
@@ -126,7 +136,8 @@ async def test_dice_activehighbuttons(dut):
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(checkDigitsShown(dut))
+  segmentsShown_task = cocotb.start_soon(checkSegmentOutputs(dut))
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
@@ -141,7 +152,8 @@ async def test_dice_activelowbuttons(dut):
   activeLevel=0
   commonLevel=0
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(checkDigitsShown(dut))
+  segmentsShown_task = cocotb.start_soon(checkSegmentOutputs(dut))
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
@@ -154,7 +166,8 @@ async def test_dice_activehighsegments(dut):
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 64+32 # Configure buttons as active high, segment outputs as active high
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(checkDigitsShown(dut))
+  segmentsShown_task = cocotb.start_soon(checkSegmentOutputs(dut))
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
@@ -167,7 +180,8 @@ async def test_dice_activehighcommons(dut):
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 128+32 # Configure buttons as active high, common outputs as active high
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(checkDigitsShown(dut))
+  segmentsShown_task = cocotb.start_soon(checkSegmentOutputs(dut))
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
@@ -180,7 +194,8 @@ async def test_dice_activehighboth(dut):
   cocotb.start_soon(clock.start())
   dut.uio_in.value = 128+64+32 # Configure buttons as active high, common and segment outputs as active high
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(checkDigitsShown(dut))
+  segmentsShown_task = cocotb.start_soon(checkSegmentOutputs(dut))
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
