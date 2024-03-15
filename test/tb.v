@@ -70,23 +70,23 @@ module tb ();
   assign litsegments = ( uio_in[6] ? uo_out : ~uo_out ) & (digit1_active || digit10_active);
 
   // Translate the lit segments to a digit
-  wire [3:0] shownDigit;
+  reg [3:0] shownDigit;
   always @(litsegments) begin
      #1000 // wait 1 us after signal change to allow all signals to settle
            // this is useful especially for gate level simulations
      case (litsegments)
-        8'b00111111: shownDigit = 4'd0;
-        8'b00000110: shownDigit = 4'd1;
-        8'b01011011: shownDigit = 4'd2;
-        8'b01001111: shownDigit = 4'd3;
-        8'b01100110: shownDigit = 4'd4;
-        8'b01101101: shownDigit = 4'd5;
-        8'b01111101: shownDigit = 4'd6;
-        8'b00000111: shownDigit = 4'd7;
-        8'b01111111: shownDigit = 4'd8;
-        8'b01101111: shownDigit = 4'd9;
-        8'b00000000: shownDigit = 4'd15; // empty display
-        default: shownDigit = 4'd14; // undefined digit
+        8'b00111111: shownDigit <= 4'd0;
+        8'b00000110: shownDigit <= 4'd1;
+        8'b01011011: shownDigit <= 4'd2;
+        8'b01001111: shownDigit <= 4'd3;
+        8'b01100110: shownDigit <= 4'd4;
+        8'b01101101: shownDigit <= 4'd5;
+        8'b01111101: shownDigit <= 4'd6;
+        8'b00000111: shownDigit <= 4'd7;
+        8'b01111111: shownDigit <= 4'd8;
+        8'b01101111: shownDigit <= 4'd9;
+        8'b00000000: shownDigit <= 4'd15; // empty display
+        default: shownDigit <= 4'd14; // undefined digit
      endcase
   end
   
