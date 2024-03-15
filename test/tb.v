@@ -70,7 +70,7 @@ module tb ();
   assign litsegments = ( uio_in[6] ? uo_out : ~uo_out ) & (digit1_active || digit10_active);
 
   // Translate the lit segments to a digit
-  wire [3:0] shownDigit
+  wire [3:0] shownDigit;
   always @(litsegments) begin
      #1000 // wait 1 us after signal change to allow all signals to settle
            // this is useful especially for gate level simulations
