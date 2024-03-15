@@ -110,7 +110,7 @@ async def reset(dut):
   dut._log.info("Reset")
   dut.ena.value = 1
   dut.rst_n.value = 0
-  releaseButtons()
+  releaseButtons(dut)
   await ClockCycles(dut.clk, 10, False)
   dut.rst_n.value = 1
   assert internalDigits(dut) == hex(1)
