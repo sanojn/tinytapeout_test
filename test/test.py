@@ -74,17 +74,24 @@ async def testCycle(dut,period,activeLevel):
 #      await Edge(uio_out[0])
 #      await(Timer(1,units='us'))  // Allow outputs to settle
 
-def noDigitsShown(dut): # Check that the 'common' signal of both displays are off
-  return ( dut.digit1_active.value==0 & dut.digit10_active.value==0 )
+def noDigitsShown(dut,commonLevel): # Check that the 'common' signal of both displays are off
+  return ( dut.digit1_active.value!=commonLevel & dut.digit10_active.value!=commonLevel )
 
-async def digitsShownCheck(dut):
-   while (dut.ui_in.value%128 != 0): # some button is pressed, We shouldn't see any digits
+def buttonPressed(dut,activeLevel):
+  if (activeLevel==1):
+    return dut.ui_in.value != 0
+  else
+    return dut.ui_in.value==0
+
+async def digitsShownCheck(dut,activeLevel,commonLevel):
+   while (buttonPressed(dut,activeLevel)): # some button is pressed, We shouldn't see any digits
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 != 0): assert noDigitsShown(dut);
-   while (dut.ui_in.value%128 == 0): # no button is pressed, something should be shown, unless the left digit is blanked out
+     if (buttonPressed(dut,activeLevel)):
+       assert noDigitsShown(dut);
+   while (not buttonPressed(dut,activeLevel)): # no button is pressed, something should be shown, unless the left digit is blanked out
      await Timer(1, units='ms');
-     if (dut.ui_in.value%128 == 0):
-         if noDigitsShown(dut):  # if no digit is shown. Maybe this digit is blanked. Wait and check the other digit
+     if (not buttonPressed(dut,activeLevel)):
+         if noDigitsShown(dut,commonLevel):  # if no digit is shown. Maybe this digit is blanked. Wait and check the other digit
              await Edge(dut.clk);
              await Timer(1, units='us');
              assert not noDigitsShown(dut);
@@ -136,7 +143,7 @@ async def test_dice_activehighbuttons(dut):
   dut.uio_in.value = 32 # Configure buttons as active high, outputs as active low
   releaseButtons(dut,activeLevel=1)
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut,activeLevel,commonLevel))
   dut._log.info("Running test")
   await testAllButtons(dut,activeLevel=1)
   dut._log.info("End test")
@@ -148,11 +155,13 @@ async def test_dice_activelowbuttons(dut):
   clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
   cocotb.start_soon(clock.start())
   dut.uio_in.value =  0 # Configure buttons as active low, outputs as active low
+  activeLevel=0
+  commonLevel=0
   releaseButtons(dut,activeLevel=0)
   await reset(dut)
-  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut))
+  digitsShown_task = cocotb.start_soon(digitsShownCheck(dut,activeLevel,commonLevel))
   dut._log.info("Running test")
-  await testAllButtons(dut,activeLevel=0)
+  await testAllButtons(dut,activeLevel)
   dut._log.info("End test")
 
 @cocotb.test()
