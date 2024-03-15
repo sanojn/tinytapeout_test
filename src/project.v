@@ -46,7 +46,7 @@ module tt_um_example (
     wire anybtn;
     assign anybtn = btn4 | btn6 | btn8 | btn10 | btn12 | btn20 | btn100;
     
-    reg [3:0] digit1, digit10;
+    (* keep *) reg [3:0] digit1, digit10;
     always @(posedge clk)
         if (rst_sync==0) begin
           digit10 <= 4'd0; digit1 <= 4'd1;
