@@ -87,7 +87,8 @@ async def checkSegmentOutputs(dut):
     assert dut.shownDigit.value == dut.user_project.digit1.value;
   elif (dut.digit10_active):
     assert dut.shownDigit.value == dut.user_project.digit10.value;
-  else assert dut.user_project.digit10.value==0;
+  else:
+    assert dut.user_project.digit10.value==0;
   
 
 async def testAllButtons(dut):
