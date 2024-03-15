@@ -96,8 +96,8 @@ module tb ();
   // them consistently
    wire [3:0] digit1, digit10;
   `ifdef GL_TEST
-     assign digit1  = { user_project.\digit1[3] , user_project.\digit1[2] , user_project.\digit1[1] , user_project.\digit1[0] }
-     assign digit10 = { user_project.\digit10[3] , user_project.\digit10[2] , user_project.\digit10[1] , user_project.\digit10[0] }
+     assign digit1  = { user_project.\digit1[3] , user_project.\digit1[2] , user_project.\digit1[1] , user_project.\digit1[0] };
+     assign digit10 = { user_project.\digit10[3] , user_project.\digit10[2] , user_project.\digit10[1] , user_project.\digit10[0] };
   `else
      assign digit1  = user_project.digit1;
      assign digit10 = user_project.digit10;
