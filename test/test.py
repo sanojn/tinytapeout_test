@@ -70,7 +70,7 @@ def noDigitsShown(dut): # Check that the 'common' signal of both displays are of
 async def digitsShownCheck(dut):
    while (dut.anyButtonPressed.value==1): # some button is pressed, We shouldn't see any digits
      await Timer(1, units='ms');
-     if (dut.anyButtonPressed.value==1): // Check that button wasn't released before looking at the digit
+     if (dut.anyButtonPressed.value==1): # Check that button wasn't released before looking at the digit
        assert noDigitsShown(dut);
    while (not dut.anyButtonPressed.value==1): # no button is pressed, something should be shown on the display
      await Timer(1, units='ms');
