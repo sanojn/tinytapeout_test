@@ -91,19 +91,19 @@ async def testAllButtons(dut):
   dut.btn6.value = 1
   await testCycle(dut,6)
   dut._log.info("Testing btn8")
-  dut.btn6.value = 1
+  dut.btn8.value = 1
   await testCycle(dut,8)
   dut._log.info("Testing btn10")
-  dut.btn6.value = 1
+  dut.btn10.value = 1
   await testCycle(dut,10)
   dut._log.info("Testing btn12")
-  dut.btn6.value = 1
+  dut.btn12.value = 1
   await testCycle(dut,12)
   dut._log.info("Testing btn20")
-  dut.btn6.value = 1
+  dut.btn20.value = 1
   await testCycle(dut,20)
   dut._log.info("Testing btn100")
-  dut.btn6.value = 1
+  dut.btn100.value = 1
   await testCycle(dut,100)
 
 async def reset(dut):
