@@ -67,7 +67,7 @@ module tb ();
   // segments are lit when equal to uio_in[6] and when the common
   // signal of either digit1 or digit10 is active
   wire [7:0] litsegments;
-  assign litsegments = ( uio_in[6] ? uo_out : ~uo_out ) && (digit1_active || digit10_active);
+  assign litsegments = ( uio_in[6] ? uo_out : ~uo_out );
 
   // Translate the lit segments to a digit
   reg [3:0] shownDigit;
