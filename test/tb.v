@@ -22,8 +22,7 @@ module tb ();
   wire [7:0] uio_out;
   wire [7:0] uio_oe;
 
-  // Replace tt_um_example with your module name:
-  tt_um_example user_project (
+  tt_um_sanojn_ttrpg_dice user_project (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
@@ -91,7 +90,7 @@ module tb ();
   end
 
 
-  // The testbench also brings out some internal signals from the user desigm that
+  // The testbench also brings out some internal signals from the user design that
   // change names in the gate level netlist so that the cocotb tesbench can reference
   // them consistently
    wire [3:0] digit1, digit10;
