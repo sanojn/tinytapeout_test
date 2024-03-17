@@ -76,7 +76,7 @@ module tt_um_sanojn_ttrpg_dice (
     always @(posedge clk) begin
         if (anybtn)
             timeoutCounter <= 8'd255;
-        else if (timeoutCounter != 8'd0) begin
+        else if (timeoutCounter != 8'd0 & tick) begin
             timeoutCounter <= timeoutCounter - 8'd1;
         end
     end
