@@ -27,9 +27,6 @@ def releaseButtons(dut):
 async def testCycle(dut,period):
     await ClockCycles(dut.clk, 1, False) # allow for synch delay
     # allow input to be deglitched
-#    if (dut.user_project.tick.value==0):
-#      await RisingEdge(dut.user_project.tick)
-#    await RisingEdge(dut.user_project.tick)
     while (dut.user_project.tick.value==0):
       await ClockCycles(dut.clk,1,False)
     await ClockCycles(dut.clk,1,False)
@@ -217,7 +214,7 @@ async def test_dice_timeout(dut):
   dut._log.info("Running test")
   dut._log.info("Pressing button")
   dut.btn100.value = 1
-  await Timer(1, units='s')
+  await Timer(1, units='sec')
   assert noDigitsShown(dut);
   dut._log.info("Releasing button")
   dut.btn100.value = 0
