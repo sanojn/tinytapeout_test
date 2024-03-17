@@ -222,14 +222,14 @@ async def test_dice_timeout(dut):
   dut._log.info("Releasing button")
   dut.btn100.value = 0
   for i in range(0,4):
-    await Timer(1, units='s')
+    await Timer(1, units='sec')
     # Digits should be shown now
     if noDigitsShown(dut):  # if no digit is shown, maybe this a blanked digit10. Wait for the other digit
       await Edge(dut.clk);
       await Timer(1, units='us');
       assert not noDigitsShown(dut);
   # Let the timeout expire
-  await Timer(6,units='s')
+  await Timer(6,units='sec')
   assert noDigitsShown(dut);
   
   dut._log.info("End test")
