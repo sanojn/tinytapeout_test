@@ -74,7 +74,10 @@ module tt_um_sanojn_ttrpg_dice (
     reg showDigitTimeout;
     reg [7:0] timeoutCounter;
     always @(posedge clk) begin
-        if (anybtn)
+        if (rst_sync==0) begin
+          timeoutCounter <= 8'd0;
+        end
+        else if (anybtn)
             timeoutCounter <= 8'd255;
         else if (timeoutCounter != 8'd0 & tick) begin
             timeoutCounter <= timeoutCounter - 8'd1;
