@@ -205,3 +205,31 @@ async def test_dice_activehighboth(dut):
   dut._log.info("Running test")
   await testAllButtons(dut)
   dut._log.info("End test")
+
+@cocotb.test()
+async def test_dice_timeout(dut):
+  dut._log.info("Testing timeout after button release")
+  dut._log.info("Setting up test")
+  clock = Clock(dut.clk, 30, units="us") # Approximation of 32768 Hz
+  cocotb.start_soon(clock.start())
+  dut.uio_in.value = 128+64+32 # Configure buttons as active high, common and segment outputs as active high
+  await reset(dut)
+  dut._log.info("Running test")
+  dut._log.info("Pressing button")
+  dut.btn100.value = 1
+  await Timer(1, units='s')
+  assert noDigitsShown(dut);
+  dut._log.info("Releasing button")
+  dut.btn100.value = 0
+  for i in range(0,4):
+    await Timer(1, units='s')
+    # Digits should be shown now
+    if noDigitsShown(dut):  # if no digit is shown, maybe this a blanked digit10. Wait for the other digit
+      await Edge(dut.clk);
+      await Timer(1, units='us');
+      assert not noDigitsShown(dut);
+  # Let the timeout expire
+  await Timer(6,units='s')
+  assert noDigitsShown(dut);
+  
+  dut._log.info("End test")
