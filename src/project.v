@@ -109,9 +109,40 @@ module tt_um_sanojn_ttrpg_dice (
     assign uo_out = ( uio_in[6] ? displaysegments : ~displaysegments );
     assign uio_out[0] =  ( uio_in[7] ? showDigit1  : ~showDigit1  );   // Digit1 common
     assign uio_out[1] =  ( uio_in[7] ? showDigit10 : ~showDigit10 );   // Digit10 common
-    
+
+
+    ///////////////////////////////////////////////////////////////////
+    // Second half of project: simple I2C slave experiment
+    // Change clock speed to 25-50 MHz
+    ///////////////////////////////////////////////////////////////////
+    wire rw;
+    wire [7:0] addr;
+    wire wen;
+    wire [7:0] wdata;
+    wire rdata_used;
+    reg [7:0] rdata;
+    module i2c_slave
+    #(.SLAVE_ADDR(7'b1111111) // 0x70 (0xE0 and 0xE1)
+    (
+      .clk(clk),
+      .rst_n(rst_n),
+      .sda_o(uio_out[2]),
+      .sda_oe(uio_oe[2]),
+      .sda_i(uio_in[2]),
+      .scl(uio_in[3]),
+
+      // application interface
+      .rw(rw),
+      .addr(addr),
+      .wen(wen),
+      .wdata(wdata),
+      .rdata_used(rdata_used),
+      .rdata(rdata)
+	  );
+
     // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out[7:2] = 4'b0;
-    assign uio_oe  = 8'b00000011;
+    assign uio_out[7:3] = 3'b0;
+    assign uio_oe[1:0]  = 2'b11;
+    assign uio_oe[7:3]  = 5'b0;
 
 endmodule
