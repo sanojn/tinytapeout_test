@@ -101,5 +101,26 @@ module tb ();
      assign digit1  = user_project.digit1;
      assign digit10 = user_project.digit10;
   `endif
+
+
+   //////////////////////////////////////////////////////////
+   // Excercising the I2C slave
+   //////////////////////////////////////////////////////////
+   reg sda, scl;
+   assign uio_in[3] = scl;
+   assign uio_in[2] = sda;
+   assign (pull1) scl = 1'b1;
+   assign (pull1) sda = 1'b1;
    
+   task i2c_write (input [7:0] i2c_addr, sub_addr, data0, data1);
+      begin
+        #20000000 sda <= 1'b0;
+                  scl <= 1'b1;
+        #20000000 sda <= 1'b0;
+                  scl <= 1'b0;
+        #20000000 sda <= 1'b0;
+                  scl <= 1'b0;
+         
+      end
+   endtask
 endmodule
