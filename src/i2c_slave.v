@@ -40,8 +40,8 @@ module i2c_slave #(
 
   // Detect edges using a glitch/noise filter
   always @(posedge clk) begin
-    scl_r <= {scl_r(2 downto 0), scl};
-    sda_r <= {sda_r(2 downto 0), sda};
+    scl_r <= {scl_r[2 downto 0], scl};
+    sda_r <= {sda_r[2 downto 0], sda};
   end
 
   // Require three consecutive samples to identify a proper edge:
@@ -63,8 +63,8 @@ module i2c_slave #(
 
   // Detect start and stop events
   always @(posedge clk) begin
-    cmd_start <= (last_event = sda_fall_event) and scl_fall when rising_edge(clk);
-    cmd_stop  <= (last_event = scl_rise_event) and sda_rise when rising_edge(clk);
+    cmd_start <= (last_event = sda_fall_event) && scl_fall;
+    cmd_stop  <= (last_event = scl_rise_event) && sda_rise;
   end
 
   // FSM state enum
@@ -96,12 +96,12 @@ module i2c_slave #(
 			wdata		   <= 8'd0;
 			state	     <= reset;
 			addr_ok		 <= 1'b0;
-    end else
+    end else begin
       // default assignments
       rdata_used <= 1'b0;
     
-      case (state):
-	  reset: begin
+      case (state)
+	      reset: begin
                    pull_sda <= 1'b0;
                    counter  <= 4'd0;
                    dbyte    <= 8'd0;
@@ -115,10 +115,10 @@ module i2c_slave #(
                       pull_sda	<= 1'b0;
                       if (scl_rise) begin
                         dbyte <= {dbyte[6:0], sda_r[0]}; // shift in data bit
-		        state <= address_f;
-			counter <= counter + 1'b1;
-		      end // scl_rise
-                    end // state address_r
+		                    state <= address_f;
+			                  counter <= counter + 1'b1;
+		                   end // scl_rise
+                     end // state address_r
 
         address_f: begin
                      pull_sda <= false;
@@ -135,8 +135,8 @@ module i2c_slave #(
                if (!addr_ok) begin
                  // We haven't seen the slave address yet, so this must be it
                  if (dbyte[7:1] != SLAVE_ADDR)
-		   state <= reset; // not our message
-		 else begin
+		               state <= reset; // not our message
+		             else begin
                    // This is our I2C address
                    // Acknowledge it
                    pull_sda <= 1'b1;
