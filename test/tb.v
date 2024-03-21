@@ -189,7 +189,7 @@ module tb ();
    task i2c_write(input [7:0] i2c_addr, sub_addr, data0, data1);
      begin
         i2c_start();
-        i2c_sendbyte(i2c_addr & 0xfe); // assert write bit
+        i2c_sendbyte(i2c_addr & 8'hfe); // assert write bit
         i2c_checkack();
         i2c_sendbyte(sub_addr);
         i2c_checkack();
