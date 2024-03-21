@@ -98,6 +98,7 @@ module i2c_slave #(
     end else begin
       // default assignments
       rdata_used <= 1'b0;
+			wen        <= 1'b0;
 
       // restart engine if start or stop was detected
 	    if (cmd_start || cmd_stop)
@@ -108,9 +109,8 @@ module i2c_slave #(
                    counter  <= 4'd0;
                    dbyte    <= 8'd0;
                    addr_ok  <= 1'b0;
-                   wen      <= 1'b0;
                    if (cmd_start)
-                     state = address_nr;
+                     state = address_r;
                    end
         
         address_r:  begin
@@ -200,8 +200,7 @@ module i2c_slave #(
                        end // state write_bytes_f
         
 				write_acq: begin
-                     wdn      <= 1'b0;
-									   pull_sda <= 1'b1;
+                     pull_sda <= 1'b1;
                      if (scl_fall) begin
 										   pull_sda <= 1'b0;
 										   state = write_bytes;
