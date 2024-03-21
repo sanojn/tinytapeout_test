@@ -119,7 +119,7 @@ module tb ();
    
    task i2c_init;
      begin
-       #delay;
+       #`delay;
        scl <= 1'bz;
        sda <= 1'bz;
        #`delay;
