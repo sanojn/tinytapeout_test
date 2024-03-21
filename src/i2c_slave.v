@@ -122,15 +122,14 @@ module i2c_slave #(
         address_f: begin
                      pull_sda <= false;
                      if (scl_fall)
-                       if (counter < 4'd8) then
+                       if (counter < 4'd8)
                          state <= address_r; // need more bits
                        else
                         state <= ack;
-                       end // counter
                     end //state address_f
       
         ack: begin
-               counter <= 0;
+               counter <= 4'b0;
                if (!addr_ok) begin
                  // We haven't seen the slave address yet, so this must be it
                  if (dbyte[7:1] != SLAVE_ADDR)
@@ -200,7 +199,7 @@ module i2c_slave #(
 				write_acq: begin
                      wdata_en <= 1'b0;
 									   pull_sda <= true;
-									   if scl_fall then
+                     if (scl_fall) begin
 										   pull_sda <= false;
 										   state <= write_bytes;
 									   end // scl_fall
@@ -208,28 +207,25 @@ module i2c_slave #(
 									
 				read_bytes_f: begin
                         pull_sda <= (dbyte[7] == 1'b0);
-					    					if scl_rise then
+                        if (scl_rise)
 							            counter <= counter +1;
-										    end if;
-                        if (scl_fall)
-                          if (counter < 4'd8) then
+										    if (scl_fall)
+                          if (counter < 4'd8)
                             dbyte <= {dbyte[6:0], '0'};
 											    else
 										        pull_sda <= 1'b0;
 												    state <= read_acq;
-											    end if;
+											    end
                         end // scl_fall in read_bytes_f
 										  end //state read_bytes_f
 									
 				read_acq: begin
                     if (scl_rise)
-										  if sda_r(0) = '1' then
-											  -- NAK
+                      if (sda_r(0) = '1')  // NAK
 											  state := reset;
-										  end if;
 									  end if;
                     if (scl_fall) begin
-										  // Capture data from app, and prepare it for the next read
+										  // Capture rdata from app, and prepare it for the next read
 										  dbyte <= rdata;
     									addr <= addr + 1'b1;
 											counter <= 4'd0;
