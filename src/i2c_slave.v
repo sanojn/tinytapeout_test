@@ -42,7 +42,7 @@ module i2c_slave #(
   // Require three consecutive identical samples to identify a proper edge:
   always @(posedge clk) begin
     scl_r <= {scl_r[2:0], scl};
-    sda_r <= {sda_r[2:0], sda};
+    sda_r <= {sda_r[2:0], sda_i};
   end
   assign scl_rise = (scl_r == 4'b0111);
   assign scl_fall = (scl_r == 4'b1000);
@@ -78,12 +78,12 @@ module i2c_slave #(
   parameter read_ack = 4'd8;
 		
   // This FSM tracks the bus transaction and executes the application R/W commands
-  always @(posedge clk) begin
+  reg [7:0] dbyte;
+	always @(posedge clk) begin
     reg [3:0] state;
-		reg addr_ok;
+    reg addr_ok;
     reg [3:0] counter;
-    reg [7:0] dbyte;
-	
+    
     if (!rst) begin
 			counter	   <= 4'd0;
 			dbyte		   <= 8'd0;
