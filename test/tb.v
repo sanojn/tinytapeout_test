@@ -201,4 +201,13 @@ module tb ();
         i2c_stop();
      end
    endtask
+
+   initial begin
+      #delay;
+      #delay;
+      #delay;
+      #delay;
+      #delay;
+      i2c_write(8'b1110000, 8'd10, 8'b01010101, 8'd31, 8'd255);
+   end
 endmodule
