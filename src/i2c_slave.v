@@ -224,13 +224,13 @@ module i2c_slave #(
 									
 				read_acq: begin
                     if (scl_rise)
-                      if (sda_r(0) = '1')  // NAK
+			                if (sda_r(0) = 1'b1)  // NAK
 											  state = reset;
-									  if (scl_fall) begin
+                    if (scl_fall) begin
 										  // Capture rdata from app, and prepare it for the next read
-										  dbyte <= rdata;
-    									addr <= addr + 1'b1;
-											counter <= 4'd0;
+                      dbyte <= rdata;
+                      addr <= addr + 1'b1;
+                      counter <= 4'd0;
                       rdata_used <= 1'b1;
 											state = read_bytes_f;
                     end // scl_fall in read_acq state
