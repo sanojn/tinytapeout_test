@@ -112,31 +112,33 @@ module tb ();
    `define delay 20000000
    
    reg sda, scl;
-   assign (pull1, strong0) uio_in[3] = scl;
-   assign (pull1, strong0) uio_in[2] = sda;
+   assign (pull1,strong0) sda = (uio_oe[2] ? uio_out[2] : 1'bz);
+   assign (pull1,strong0) scl = (uio_oe[3] ? uio_out[3] : 1'bz);
+   assign uio_in[3] = sda;
+   assign uio_in[2] = scl;
    
    task i2c_init;
      begin
        #delay;
-       scl <= `H;
-       sda <= `H;
+       scl <= 1'bz;
+       sda <= 1'bz;
        #`delay;
      end
    endtask
 
    task i2c_start; // also works as restart
      begin
-        if (sda==`L) begin
-          sda <= `H;
+        if (!sda) begin
+          sda <= 1'bz;
           #delay;
        end
-       if (scl==`L) begin
-          scl <= `H;
+        if (!scl) begin
+          scl <= 1'bz;
           #`delay;
        end
-       sda <= `L;
+       sda <= 1'b0;
        #`delay;
-       scl <= `L;
+       scl <= 1'b0;
        #`delay;
      end
    endtask
@@ -144,26 +146,26 @@ module tb ();
    task i2c_stop; // call with scl low
      begin
        #`delay;
-       if (sda==`H) begin
-         sda <= `L;
+       if (sda) begin
+         sda <= 1'b0;
          #`delay;
        end
-       scl <= `H;
+       scl <= 1'bz;
        #`delay
-       sda <= `H;
+       sda <= 1'bz;
        #`delay;
      end
    endtask
 
    task i2c_sendbit(d); // call with scl
       begin
-         sda <= d; // assert data
+         sda <= ( d ? 1'bz : 1'b0 ); // assert data
          #`delay;
-         scl <= `H; // pulse clock
+         scl <= 1'bz; // pulse clock
          #`delay;
-         scl <= `L;
+         scl <= 1'b0;
          #`delay;
-         sda <= `H; // release data
+         sda <= 1'bz; // release data
       end
    endtask
          
@@ -177,12 +179,12 @@ module tb ();
 
    task i2c_checkack;
       begin
-         sda <= 1;
+         sda <= 1'bz;
          #`delay;
-         scl <= `H;
+         scl <= 1'bz;
          #`delay;
-         if (sda != L) $display("NAK during i2c transaction");
-         scl <= `L;
+         if (sda) $display("NAK during i2c transaction");
+         scl <= 1'b0;
          #`delay;
       end
    endtask
