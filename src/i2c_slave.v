@@ -236,6 +236,7 @@ module i2c_slave #(
                     end // scl_fall in read_acq state
 									end // state read_acq
 			endcase // FSM state
+    end // rst
   end
 	
   assign wdata = dbyte;
