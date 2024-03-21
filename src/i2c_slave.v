@@ -7,8 +7,8 @@ module i2c_slave #(
   )
   (
 	  input	clk,
-	  input  rst_n,
-	  output sda_o,
+    input  rst_n,
+    output sda_o,
     output sda_oe,
     input  sda_i,
     input scl,
@@ -33,7 +33,7 @@ module i2c_slave #(
   parameter sda_fall_event = 2'b11;
   
   reg [1:0] last_event;
-  wire cmd_start, cmd_stop;
+  reg cmd_start, cmd_stop;
 
   assign sda_o  = 1'b0;
   assign sda_oe = pull_sda;
@@ -84,7 +84,7 @@ module i2c_slave #(
     reg addr_ok;
     reg [3:0] counter;
     
-    if (!rst) begin
+    if (!rst_n) begin
 			counter	   <= 4'd0;
 			dbyte		   <= 8'd0;
 			addr    	 <= 8'd0;
