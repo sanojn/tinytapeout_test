@@ -212,14 +212,14 @@ module i2c_slave #(
                         pull_sda <= (dbyte[7] == 1'b0);
                         if (scl_rise)
 							            counter <= counter + 1'd1;
-										    if (scl_fall)
-                          if (counter < 4'd8)
-                            dbyte <= {dbyte[6:0], '0'};
-			                    else begin 
-	                          pull_sda <= 1'b0;
-                            state = read_acq;
-											    end
-                        end // scl_fall in read_bytes_f
+                          if (scl_fall) begin
+                            if (counter < 4'd8)
+                              dbyte <= {dbyte[6:0], 1'b0};
+			                      else begin 
+	                            pull_sda <= 1'b0;
+                              state = read_acq;
+											      end
+                          end // scl_fall in read_bytes_f
 										  end //state read_bytes_f
 									
 				read_acq: begin
@@ -235,7 +235,7 @@ module i2c_slave #(
 											state = read_bytes_f;
                     end // scl_fall in read_acq state
 									end // state read_acq
-			end case // FSM state
+			endcase // FSM state
   end
 	
   assign wdata = dbyte;
