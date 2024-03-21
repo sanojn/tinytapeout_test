@@ -20,37 +20,37 @@ module i2c_slave #(
      output reg [7:0] wdata,
      output reg rdata_used,
      input rdata
-	);
+  );
 
   reg pull_sda;
   reg [3:0] sda_r, scl_r; // sample registers for i2c line debouncing and edge detection
-	wire scl_rise, scl_fall, sda_rise, sda_fall: boolean;
+  wire scl_rise, scl_fall, sda_rise, sda_fall;
 
-	// i2c event enums
+  // i2c event enums
   parameter scl_rise_event = 2'b00;
   parameter scl_fall_event = 2'b01;
   parameter sda_rise_event = 2'b10;
   parameter sda_fall_event = 2'b11;
   
   reg [1:0] last_event;
-	wire cmd_start, cmd_stop;
+  wire cmd_start, cmd_stop;
 
-begin
-	assign sda_o  = 1'b0;
+  assign sda_o  = 1'b0;
   assign sda_oe = pull_sda;
 
-	// Detect edges using a glitch/noise filter
+  // Detect edges using a glitch/noise filter
   always @(posedge clk) begin
     scl_r <= {scl_r(2 downto 0), scl};
     sda_r <= {sda_r(2 downto 0), sda};
   end
-	// Require three consecutive samples to identify a proper edge:
+
+  // Require three consecutive samples to identify a proper edge:
   assign scl_rise = (scl_r == 4'b0111);
   assign scl_fall = (scl_r == 4'b1000);
   assign sda_rise = (sda_r == 4'b0111);
   assign sda_fall = (sda_r == 4'b1000);
 	
-	// Remember previous events
+  // Remember previous events
   always @(posedge clk)
     if (scl_rise)
        last_event <= scl_rise_event;
@@ -68,7 +68,7 @@ begin
   end
 
   // FSM state enum
-	parameter reset = 4'd0;
+  parameter reset = 4'd0;
   parameter address_r = 4'd1;
   parameter address_f = 4'd2;
   parameter ack = 4'd3;
