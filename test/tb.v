@@ -107,9 +107,9 @@ module tb ();
    //////////////////////////////////////////////////////////
    // Excercising the I2C slave
    //////////////////////////////////////////////////////////
-   #define H 1'b1
-   #define L 1'b0
-   #define delay 20000000
+   `define H 1'b1
+   `define L 1'b0
+   `define delay 20000000
    
    reg sda, scl;
    assign (pull1, strong0) uio_in[3] = scl;
