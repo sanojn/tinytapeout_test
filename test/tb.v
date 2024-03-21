@@ -130,7 +130,7 @@ module tb ();
      begin
         if (!sda) begin
           sda <= 1'bz;
-          #delay;
+          #`delay;
        end
         if (!scl) begin
           scl <= 1'bz;
@@ -171,6 +171,7 @@ module tb ();
          
    task i2c_sendbyte (input [7:0] data);
       begin
+         integer i;
          for (i=7; i>0 ; i = i-1 ) begin
             i2c_sendbit(data[i]);
          end
