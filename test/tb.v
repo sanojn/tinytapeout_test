@@ -114,7 +114,7 @@ module tb ();
    assign (pull1, strong0) uio_in[3] = scl;
    assign (pull1, strong0) uio_in[2] = sda;
    
-   task i2c_init();
+   task i2c_init;
      begin
        #delay;
        scl <= H;
@@ -123,7 +123,7 @@ module tb ();
      end
    endtask
 
-   task i2c_start(); // also works as restart
+   task i2c_start; // also works as restart
      begin
         if (sda==L) begin
           sda <= H;
@@ -140,7 +140,7 @@ module tb ();
      end
    endtask
    
-   task i2c_stop(); // call with scl low
+   task i2c_stop; // call with scl low
      begin
        #delay;
        if (sda==H) begin
@@ -174,7 +174,7 @@ module tb ();
       end
    endtask
 
-   task i2c_checkack();
+   task i2c_checkack;
       begin
          sda <= 1;
          #delay;
