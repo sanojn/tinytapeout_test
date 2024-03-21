@@ -106,21 +106,98 @@ module tb ();
    //////////////////////////////////////////////////////////
    // Excercising the I2C slave
    //////////////////////////////////////////////////////////
-   reg sda, scl;
-   assign uio_in[3] = scl;
-   assign uio_in[2] = sda;
-   assign (pull1) scl = 1'b1;
-   assign (pull1) sda = 1'b1;
+   #define H 1'b1
+   #define L 1'b0
+   #define delay 20000000
    
-   task i2c_write (input [7:0] i2c_addr, sub_addr, data0, data1);
+   reg sda, scl;
+   assign (pull1, strong0) uio_in[3] = scl;
+   assign (pull1, strong0) uio_in[2] = sda;
+   
+   task i2c_init();
+     begin
+       #delay;
+       scl <= H;
+       sda <= H;
+       #delay;
+     end
+   endtask
+
+   task i2c_start(); // also works as restart
+     begin
+        if (sda==L) begin
+          sda <= H;
+          #delay;
+       end
+       if (scl==L) begin
+          scl <= H;
+          #delay;
+       end
+       sda <= L;
+       #delay;
+       scl <= L;
+       #delay;
+     end
+   endtask
+   
+   task i2c_stop(); // call with scl low
+     begin
+       #delay;
+       if (sda==H) begin
+         sda <= L;
+         #delay;
+       end
+       scl <= H;
+       #delay
+       sda <= H;
+       #delay;
+     end
+   endtask
+
+   task i2c_sendbit(d); // call with scl
       begin
-        #20000000 sda <= 1'b0;
-                  scl <= 1'b1;
-        #20000000 sda <= 1'b0;
-                  scl <= 1'b0;
-        #20000000 sda <= 1'b0;
-                  scl <= 1'b0;
-         
+         sda <= d; // assert data
+         #delay;
+         scl <= H; // pulse clock
+         #delay;
+         scl <= L;
+         #delay;
+         sda <= 1; // release data
       end
+   endtask
+         
+   task i2c_sendbyte (input [7:0] data);
+      begin
+         for (i=7; i>0 ; i = i-1 ) begin
+            i2c_sendbit(data[i]);
+         end
+      end
+   endtask
+
+   task i2c_checkack();
+      begin
+         sda <= 1;
+         #delay;
+         scl <= H;
+         #delay;
+         if (sda != L) $display("NAK during i2c transaction");
+         scl <= L;
+         #delay;
+      end
+   endtask
+   
+   task i2c_write(input [7:0] i2c_addr, sub_addr, data0, data1);
+     begin
+        i2c_start();
+        i2c_sendbyte(i2c_addr & 0xfe); // assert write bit
+        i2c_checkack();
+        i2c_sendbyte(sub_addr);
+        i2c_checkack();
+        i2c_sendbyte(data0);
+        i2c_checkack();
+        i2c_sendbyte(data1);
+        i2c_checkack();
+        i2c_stop();
+     end
    endtask
 endmodule
