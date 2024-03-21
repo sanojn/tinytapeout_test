@@ -92,7 +92,6 @@ module i2c_slave #(
 			rdata_used <= 1'b0;
 			pull_sda 	 <= 1'b0;
 			wen        <= 1'b0;
-			wdata		   <= 8'd0;
 			state	      = reset;
 			addr_ok		 <= 1'b0;
     end else begin
