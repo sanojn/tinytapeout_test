@@ -118,52 +118,52 @@ module tb ();
    task i2c_init;
      begin
        #delay;
-       scl <= H;
-       sda <= H;
-       #delay;
+       scl <= `H;
+       sda <= `H;
+       #`delay;
      end
    endtask
 
    task i2c_start; // also works as restart
      begin
-        if (sda==L) begin
-          sda <= H;
+        if (sda==`L) begin
+          sda <= `H;
           #delay;
        end
-       if (scl==L) begin
-          scl <= H;
-          #delay;
+       if (scl==`L) begin
+          scl <= `H;
+          #`delay;
        end
-       sda <= L;
-       #delay;
-       scl <= L;
-       #delay;
+       sda <= `L;
+       #`delay;
+       scl <= `L;
+       #`delay;
      end
    endtask
    
    task i2c_stop; // call with scl low
      begin
-       #delay;
-       if (sda==H) begin
-         sda <= L;
-         #delay;
+       #`delay;
+       if (sda==`H) begin
+         sda <= `L;
+         #`delay;
        end
-       scl <= H;
-       #delay
-       sda <= H;
-       #delay;
+       scl <= `H;
+       #`delay
+       sda <= `H;
+       #`delay;
      end
    endtask
 
    task i2c_sendbit(d); // call with scl
       begin
          sda <= d; // assert data
-         #delay;
-         scl <= H; // pulse clock
-         #delay;
-         scl <= L;
-         #delay;
-         sda <= 1; // release data
+         #`delay;
+         scl <= `H; // pulse clock
+         #`delay;
+         scl <= `L;
+         #`delay;
+         sda <= `H; // release data
       end
    endtask
          
@@ -178,12 +178,12 @@ module tb ();
    task i2c_checkack;
       begin
          sda <= 1;
-         #delay;
-         scl <= H;
-         #delay;
+         #`delay;
+         scl <= `H;
+         #`delay;
          if (sda != L) $display("NAK during i2c transaction");
-         scl <= L;
-         #delay;
+         scl <= `L;
+         #`delay;
       end
    endtask
    
@@ -203,11 +203,11 @@ module tb ();
    endtask
 
    initial begin
-      #delay;
-      #delay;
-      #delay;
-      #delay;
-      #delay;
+      #`delay;
+      #`delay;
+      #`delay;
+      #`delay;
+      #`delay;
       i2c_write(8'b1110000, 8'd10, 8'b01010101, 8'd31, 8'd255);
    end
 endmodule
