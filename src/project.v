@@ -121,7 +121,7 @@ module tt_um_sanojn_ttrpg_dice (
     wire [7:0] wdata;
     wire rdata_used;
     reg [7:0] rdata;
-    i2c_slave i2c #(parameter SLAVE_ADDR(7'b1111111)) // 0x70 (0xE0 and 0xE1)
+    i2c_slave #(parameter SLAVE_ADDR(7'b1111111)) i2c // 0x70 (0xE0 and 0xE1)
     (
       .clk(clk),
       .rst_n(rst_n),
