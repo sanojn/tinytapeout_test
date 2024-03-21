@@ -112,10 +112,13 @@ module tb ();
    `define delay 20000000
    
    reg sda, scl;
-   assign (pull1,strong0) sda = (uio_oe[2] ? uio_out[2] : 1'bz);
-   assign (pull1,strong0) scl = (uio_oe[3] ? uio_out[3] : 1'bz);
-   assign uio_in[3] = sda;
-   assign uio_in[2] = scl;
+   wire sda_bus, scl_bus;
+   assign (pull1,strong0) sda_bus = (uio_oe[2] ? uio_out[2] : 1'bz);
+   assign (pull1,strong0) scl_bus = (uio_oe[3] ? uio_out[3] : 1'bz);
+   assign sda_bus = sda;
+   assign scl_bus = scl;
+   assign uio_in[3] = sda_bus;
+   assign uio_in[2] = scl_bus;
    
    task i2c_init;
      begin
