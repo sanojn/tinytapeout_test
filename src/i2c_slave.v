@@ -100,9 +100,8 @@ module i2c_slave #(
       rdata_used <= 1'b0;
 
       // restart engine if start or stop was detected
-      if (cmd_start | cmd_stop)  then
+	    if (cmd_start || cmd_stop)
 				state = reset;
-			end if;
       case (state)
 	      reset: begin
                    pull_sda <= 1'b0;
@@ -212,7 +211,7 @@ module i2c_slave #(
 				read_bytes_f: begin
                         pull_sda <= (dbyte[7] == 1'b0);
                         if (scl_rise)
-							            counter <= counter +1;
+							            counter <= counter + 1'd1;
 										    if (scl_fall)
                           if (counter < 4'd8)
                             dbyte <= {dbyte[6:0], '0'};
