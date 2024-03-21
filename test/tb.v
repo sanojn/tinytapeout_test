@@ -211,6 +211,6 @@ module tb ();
       #`delay;
       #`delay;
       #`delay;
-      i2c_write(8'b1110000, 8'd10, 8'b01010101, 8'd31, 8'd255);
+      i2c_write(8'b1110000, 8'd10, 8'b01010101, 8'd31);
    end
 endmodule
