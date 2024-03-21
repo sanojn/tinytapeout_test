@@ -19,7 +19,7 @@ module i2c_slave #(
      output reg wen,
      output reg [7:0] wdata,
      output reg rdata_used,
-     input rdata
+    input [7:0] rdata
   );
 
   reg pull_sda;
@@ -91,7 +91,7 @@ module i2c_slave #(
 			rw			   <= 1'b1;
 			rdata_used <= 1'b0;
 			pull_sda 	 <= 1'b0;
-			wdata_en 	 <= 1'b0;
+			wen        <= 1'b0;
 			wdata		   <= 8'd0;
 			state	      = reset;
 			addr_ok		 <= 1'b0;
@@ -108,7 +108,7 @@ module i2c_slave #(
                    counter  <= 4'd0;
                    dbyte    <= 8'd0;
                    addr_ok  <= 1'b0;
-                   wdata_en <= 1'b0;
+                   wen      <= 1'b0;
                    if (cmd_start)
                      state = address_nr;
                    end
@@ -123,7 +123,7 @@ module i2c_slave #(
                      end // state address_r
 
         address_f: begin
-                     pull_sda <= false;
+                     pull_sda <=1'b0;
                      if (scl_fall)
                        if (counter < 4'd8)
                          state = address_r; // need more bits
@@ -144,7 +144,7 @@ module i2c_slave #(
                    if (scl_fall) begin
                      pull_sda <= 1'b0;
                      // remember that we've seen the address
-                     addr_ok <= true;
+                     addr_ok <= 1'b1;
                      if (!dbyte[0]) begin
                        rw <= 1'b0;
                        // and expect the subaddr byte next
@@ -167,7 +167,7 @@ module i2c_slave #(
                  // so this must be the sub-address byte.
                  // Acknowledge it, pass it to the application and prepare
                  // for write transactions after the next falling clock edge
-                 pull_sda <= true;
+                 pull_sda <= 1'b1;
                  if (scl_fall) begin
                    pull_sda <= 1'b0;
                    addr <= dbyte;
@@ -178,7 +178,7 @@ module i2c_slave #(
              end // state ack
 							
 				write_bytes: begin
-                       pull_sda	<= false;
+                       pull_sda	<= 1'b0;
                        if (scl_rise) begin
                          dbyte <= {dbyte[6:0] , sda_r[0]}; // shift in data bit
 										     state = write_bytes_f;
@@ -187,23 +187,23 @@ module i2c_slave #(
                      end // state write_bytes
 	
 				write_bytes_f: begin
-                         pull_sda	<= false;
+                         pull_sda	<= 1'b0;
                          if (scl_fall) begin
                            if (counter < 4'd8)
 												     state = write_bytes; // get more bits
 											     else begin
 												     counter <= 4'd0;
-												     wdata_en <= 1'b1;
+												     wen     <= 1'b1;
 												     state	= write_acq;
 											     end // counter
                          end // scl_fall
                        end // state write_bytes_f
         
 				write_acq: begin
-                     wdata_en <= 1'b0;
-									   pull_sda <= true;
+                     wdn      <= 1'b0;
+									   pull_sda <= 1'b1;
                      if (scl_fall) begin
-										   pull_sda <= false;
+										   pull_sda <= 1'b0;
 										   state = write_bytes;
 									   end // scl_fall
                    end // state write_acq
@@ -217,14 +217,14 @@ module i2c_slave #(
                               dbyte <= {dbyte[6:0], 1'b0};
 			                      else begin 
 	                            pull_sda <= 1'b0;
-                              state = read_acq;
+                              state = read_ack;
 											      end
                           end // scl_fall in read_bytes_f
 										  end //state read_bytes_f
 									
-				read_acq: begin
+				read_ack: begin
                     if (scl_rise)
-                      if (sda_r(0))  // NAK
+                      if (sda_r[0])  // NAK
 											  state = reset;
                     if (scl_fall) begin
 										  // Capture rdata from app, and prepare it for the next read
