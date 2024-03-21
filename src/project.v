@@ -121,8 +121,7 @@ module tt_um_sanojn_ttrpg_dice (
     wire [7:0] wdata;
     wire rdata_used;
     reg [7:0] rdata;
-    module i2c_slave
-    #(.SLAVE_ADDR(7'b1111111) // 0x70 (0xE0 and 0xE1)
+    module i2c_slave #(.SLAVE_ADDR(7'b1111111)) // 0x70 (0xE0 and 0xE1)
     (
       .clk(clk),
       .rst_n(rst_n),
@@ -138,7 +137,7 @@ module tt_um_sanojn_ttrpg_dice (
       .wdata(wdata),
       .rdata_used(rdata_used),
       .rdata(rdata)
-	  );
+    );
 
     // All output pins must be assigned. If not used, assign to 0.
     assign uio_out[7:3] = 3'b0;
