@@ -39,12 +39,11 @@ module i2c_slave #(
   assign sda_oe = pull_sda;
 
   // Detect edges using a glitch/noise filter
+  // Require three consecutive identical samples to identify a proper edge:
   always @(posedge clk) begin
-    scl_r <= {scl_r[2 downto 0], scl};
-    sda_r <= {sda_r[2 downto 0], sda};
+    scl_r <= {scl_r[2:0], scl};
+    sda_r <= {sda_r[2:0], sda};
   end
-
-  // Require three consecutive samples to identify a proper edge:
   assign scl_rise = (scl_r == 4'b0111);
   assign scl_fall = (scl_r == 4'b1000);
   assign sda_rise = (sda_r == 4'b0111);
@@ -55,7 +54,7 @@ module i2c_slave #(
     if (scl_rise)
        last_event <= scl_rise_event;
     else if (scl_fall)
-		   last_event <= scl_fall_event;
+       last_event <= scl_fall_event;
     else if	(sda_rise)
        last_event <= sda_rise_event;
     else if (sda_fall)
@@ -63,8 +62,8 @@ module i2c_slave #(
 
   // Detect start and stop events
   always @(posedge clk) begin
-    cmd_start <= (last_event = sda_fall_event) && scl_fall;
-    cmd_stop  <= (last_event = scl_rise_event) && sda_rise;
+    cmd_start <= (last_event == sda_fall_event) && scl_fall;
+    cmd_stop  <= (last_event == scl_rise_event) && sda_rise;
   end
 
   // FSM state enum
@@ -128,7 +127,7 @@ module i2c_slave #(
                        else
                         state <= ack;
                        end // counter
-                      end //state address_f
+                    end //state address_f
       
         ack: begin
                counter <= 0;
