@@ -233,6 +233,8 @@ module i2c_slave #(
 											state = read_bytes_f;
                     end // scl_fall in read_acq state
 									end // state read_acq
+        
+        default: state = reset;
 			endcase // FSM state
     end // rst
   end
