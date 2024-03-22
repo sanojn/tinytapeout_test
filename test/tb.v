@@ -157,11 +157,8 @@ module tb ();
    
    task i2c_stop; // call with scl low
      begin
+       sda <= 1'b0;
        #`delay;
-       if (sda) begin
-         sda <= 1'b0;
-         #`delay;
-       end
        scl <= 1'bz;
        #`delay
        sda <= 1'bz;
