@@ -213,8 +213,7 @@ module tb ();
    endtask
 
    initial begin
-      #`delay;
-      #`delay;
+      i2c_init;
       #`delay;
       #`delay;
       #`delay;
