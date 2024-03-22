@@ -117,6 +117,7 @@ module tb ();
    reg sda, scl;
    wire sda_bus, scl_bus;
    assign (pull1,strong0) sda_bus = (uio_oe[2] ? uio_out[2] : 1'b1);
+   pullup(scl_bus);
    assign sda_bus = sda;
    assign scl_bus = scl;
    // strength reduction to get well-defined inputs
