@@ -150,29 +150,27 @@ module tt_um_sanojn_ttrpg_dice (
     // I2C Peripheral GPIO pin uio[4]
     reg [7:0] IOctrl;
     reg [7:0] pwm;
-    reg io, io_oe;
+    reg io_oe;
     always @(posedge clk)
       if (!rst_n) begin
-        io     <= 1'b0;
         io_oe  <= 1'b0;
         IOctrl <= 8'b0;
       end else begin
         if (addr[2:0]==3'b100 && wen)
           IOctrl <= wdata;
         if (addr[2:0]==3'b101 && wen)
-          io <= wdata[0];
+          io_oe <= wdata[0];
       end
-    assign uio_out[4] = io;
     assign uio_oe[4] = io_oe;
     
     // simple PWM generator for the IO pin
-    // IOctrl < 128 will output a PWM signal based on IOctrl[6:0] / 128
-    // IOctrl > 128 will output IOctrl[0]
+    // IOctrl <= 128 will output a PWM signal based on IOctrl[6:0] / 128
+    // IOctrl >  128 will output 1
     always @(posedge clk) begin
       if (!rst_n) pwm <= 8'b0;
       else begin
         pwm <= {1'b0,pwm[6:0]} + IOctrl[6:0];
-        if (IOctrl[7]) pwm[7] <= IOctrl[0];
+          if (IOctrl[7]) pwm[7] <= 1'b1;
       end
     end
     assign uio_out[4] = pwm[7];
