@@ -179,7 +179,7 @@ module tb ();
    task i2c_sendbyte (input [7:0] data);
       begin
          integer i;
-         for (i=7; i>0 ; i = i-1 ) begin
+         for (i=7; i>=0 ; i = i-1 ) begin
             i2c_sendbit(data[i]);
          end
       end
