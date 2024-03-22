@@ -144,11 +144,10 @@ module tt_um_sanojn_ttrpg_dice (
     
     // Memory peripheral
     reg [7:0] mem [7:0];
-    reg mem_en;
     
     always @(posedge clk)
-      if (!addr[2] && wen)
-        mem[addr[1:0]] <= wdata;
+      if (!addr[3] && wen)
+        mem[addr[2:0]] <= wdata;
 
     // I2C Peripheral GPIO pin uio[4]
     reg [7:0] IOctrl;
@@ -159,9 +158,9 @@ module tt_um_sanojn_ttrpg_dice (
         io_oe  <= 1'b0;
         IOctrl <= 8'b0;
       end else begin
-        if (addr[3:0]==3'b100 && wen)
+        if (addr[3:0]==4'b1000 && wen)
           IOctrl <= wdata;
-        if (addr[3:0]==3'b101 && wen)
+        if (addr[3:0]==4'b1001 && wen)
           io_oe <= wdata[0];
       end
     assign uio_oe[4] = io_oe;
@@ -180,10 +179,10 @@ module tt_um_sanojn_ttrpg_dice (
 
     // I2C reads
     always @(*) begin
-      if (!addr[2]) rdata = mem[addr[1:0]];
-      else if (addr[4:0]==4'b1000)   rdata = IOctrl;
-      else if (addr[4:0]==4'b1001) rdata = { 7'b0 , uio_oe[4] };
-      else if (addr[4:0]==4'b1010) rdata = uio_in;
+      if (!addr[3]) rdata = mem[addr[2:0]];
+      else if (addr[3:0]==4'b1000)   rdata = IOctrl;
+      else if (addr[3:0]==4'b1001) rdata = { 7'b0 , uio_oe[4] };
+      else if (addr[3:0]==4'b1010) rdata = uio_in;
       else                          rdata = ui_in;
     end
 
