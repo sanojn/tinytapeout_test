@@ -136,7 +136,7 @@ module tt_um_sanojn_ttrpg_dice (
       .wen(wen),
       .wdata(wdata),
       .rdata_used(rdata_used),
-      .rdata(wdata)
+      .rdata(addr)
     );
 
     // All output pins must be assigned. If not used, assign to 0.
