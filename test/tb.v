@@ -256,6 +256,7 @@ module tb ();
 
    task i2c_read(input [7:0] i2c_addr, sub_addr, no_of_bytes);
      begin
+        integer i;
         i2c_start();
         i2c_sendbyte(i2c_addr & 8'hfe); // assert write bit
         i2c_checkack();
@@ -264,7 +265,6 @@ module tb ();
         i2c_start();                    // emit a restart
         i2c_sendbyte(i2c_addr | 8'h01); // assert read bit
         i2c_checkack();
-        integer i;
         for (i=1; i<no_of_bytes; i=i+1) begin
           i2c_recvbyte();
           i2c_emitack();
