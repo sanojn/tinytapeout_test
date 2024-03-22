@@ -17,7 +17,7 @@ module i2c_slave #(
      output reg rw,
      output reg [7:0] addr,
      output reg wen,
-     output reg [7:0] wdata,
+     output wire [7:0] wdata,
      output reg rdata_used,
     input [7:0] rdata
   );
