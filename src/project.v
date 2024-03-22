@@ -168,8 +168,11 @@ module tt_um_sanojn_ttrpg_dice (
     // IOctrl < 128 will output a PWM signal based on IOctrl[6:0] / 128
     // IOctrl > 128 will output IOctrl[0]
     always @(posedge clk) begin
-      pwm <= {1'b0,pwm[6:0]} + IOctrl[6:0];
-      if (IOctrl[7]) pwm[7] <= IOctrl[0];
+      if (!rst_n) pwm <= 8'b0;
+      else begin
+        pwm <= {1'b0,pwm[6:0]} + IOctrl[6:0];
+        if (IOctrl[7]) pwm[7] <= IOctrl[0];
+      end
     end
     assign uio_out[4] = pwm[7];
 
