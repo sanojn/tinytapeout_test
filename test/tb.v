@@ -196,7 +196,7 @@ module tb ();
          #`delay;
          scl <= 1'bz; // pulse clock
          #`delay;
-         rbit <= sda; // sample data
+         rbit <= uio_in[2]; // sample data. uio_in[2] is the strength resolved version of sda
          scl <= 1'b0;
          #`delay;
       end
