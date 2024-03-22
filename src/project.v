@@ -139,8 +139,11 @@ module tt_um_sanojn_ttrpg_dice (
       .rdata(rdata)
     );
 
-    // I2C Peripheral memory
-    reg [7:0] mem [3:0];
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // A few small I2C peripherals
+    
+    // Memory peripheral
+    reg [7:0] mem [7:0];
     reg mem_en;
     
     always @(posedge clk)
@@ -156,9 +159,9 @@ module tt_um_sanojn_ttrpg_dice (
         io_oe  <= 1'b0;
         IOctrl <= 8'b0;
       end else begin
-        if (addr[2:0]==3'b100 && wen)
+        if (addr[3:0]==3'b100 && wen)
           IOctrl <= wdata;
-        if (addr[2:0]==3'b101 && wen)
+        if (addr[3:0]==3'b101 && wen)
           io_oe <= wdata[0];
       end
     assign uio_oe[4] = io_oe;
@@ -177,19 +180,19 @@ module tt_um_sanojn_ttrpg_dice (
 
     // I2C reads
     always @(*) begin
-      if (!addr[2]) rdata <= mem[addr[1:0]];
-      else if (addr==3'b100) rdata <= IOctrl;
-      else if (addr==3'b101) rdata <= { 7'b0 , uio_oe[4] };
-      else if (addr==3'b110) rdata <= uio_in;
-      else                   rdata <= ui_in;
+      if (!addr[2]) rdata = mem[addr[1:0]];
+      else if (addr[4:0]==4'b1000)   rdata = IOctrl;
+      else if (addr[4:0]==4'b1001) rdata = { 7'b0 , uio_oe[4] };
+      else if (addr[4:0]==4'b1010) rdata = uio_in;
+      else                          rdata = ui_in;
     end
 
       
-    // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out[7:5] = 2'b0;
-    assign uio_out[3]   = 1'b0;
-    assign uio_oe[1:0]  = 2'b11;
-    assign uio_oe[7:5]  = 5'b0;
-    assign uio_oe[3]  = 5'b0;
+  // All output pins must be assigned. If not used, assign to 0.
+  assign uio_out[7:5] = 3'b0;
+  assign uio_out[3]   = 1'b0;
+  assign uio_oe[1:0]  = 2'b11;
+  assign uio_oe[7:5]  = 3'b0;
+  assign uio_oe[3]  = 1'b0;
 
 endmodule
