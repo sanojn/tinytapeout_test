@@ -178,10 +178,10 @@ module tt_um_sanojn_ttrpg_dice (
     // I2C reads
     always @(*) begin
       if (!addr[2]) rdata <= mem[addr[1:0]];
-      else if (addr==3'b100) rdata <= uio_in;
+      else if (addr==3'b100) rdata <= IOctrl;
       else if (addr==3'b101) rdata <= { 7'b0 , uio_oe[4] };
-      else if (addr==3'b111) rdata <= IOctrl;
-      else rdata <= ui_in;
+      else if (addr==3'b110) rdata <= uio_in;
+      else                   rdata <= ui_in;
     end
 
       
