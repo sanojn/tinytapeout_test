@@ -20,7 +20,7 @@ module tt_um_sanojn_ttrpg_dice (
     // Use rst_sync as internal asynchronous reset
     reg rst_sync1, rst_sync;
     always @(negedge clk)
-        {rst_sync, rst_sync1} = {rst_sync1, rst_n};
+      {rst_sync, rst_sync1} <= {rst_sync1, rst_n};
     
     // Prescaler provides a one clock-cycle pulse at 32 Hz
     reg [9:0] prescaler;
