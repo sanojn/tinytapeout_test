@@ -112,7 +112,8 @@ module tb ();
    //////////////////////////////////////////////////////////
    // Excercising the I2C slave
    //////////////////////////////////////////////////////////
-   `define delay 150000
+   `define delay      150000
+   `define longdelay 1000000
    
    reg sda, scl;
    wire sda_bus, scl_bus;
@@ -264,7 +265,7 @@ module tb ();
         i2c_sendbyte(i2c_addr | 8'h01); // assert read bit
         i2c_checkack();
         integer i;
-        for (i=1, i<no_of_bytes; i=i+1) begin
+        for (i=1; i<no_of_bytes; i=i+1) begin
           i2c_recvbyte();
           i2c_emitack();
         end
@@ -274,11 +275,11 @@ module tb ();
    
    initial begin
       i2c_init;
-      # 8 * `delay;
+      #`longdelay;
       i2c_write(8'b11100000, 8'd10, 8'b01010101, 8'd31);
-      # 8 * `delay;
+      #`longdelay;
       i2c_write(8'b11100000, 8'd127, 8'b11111010, 8'd77);
-      # 8 * `delay;
+      #`longdelay;
       i2c_read(8'b11100000, 8'd126,8'd3);
    end
 endmodule
