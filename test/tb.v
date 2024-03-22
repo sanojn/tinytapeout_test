@@ -262,7 +262,7 @@ module tb ();
         i2c_start();                    // emit a restart
         i2c_sendbyte(i2c_addr | 8'h01); // assert read bit
         i2c_checkack();
-        for (i=1; i<no_of_bytes; i=i+1) begin
+        for (i=0; i<no_of_bytes; i=i+1) begin
           i2c_recvbyte();
           i2c_emitack();
         end
