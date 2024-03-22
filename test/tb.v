@@ -121,8 +121,8 @@ module tb ();
    assign sda_bus = sda;
    assign scl_bus = scl;
    // strength reduction to get well-defined inputs
-   buf (uio_in[3],sda_bus);
-   buf (uio_in[2],scl_bus);
+   buf (uio_in[2],sda_bus);
+   buf (uio_in[3],scl_bus);
    
    task i2c_init;
      begin
