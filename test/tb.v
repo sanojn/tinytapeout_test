@@ -275,9 +275,9 @@ module tb ();
       #`longdelay;
       i2c_write(8'b11100000, 8'd0, 8'haa, 8'h55);
       #`longdelay;
-      i2c_write(8'b11100000, 8'd0, 8'h69, 8'h96);
+      i2c_write(8'b11100000, 8'd2, 8'h69, 8'h96);
       #`longdelay;
-      i2c_write(8'b11100000, 8'd0, 8'h33, 8'hff);
+      i2c_write(8'b11100000, 8'd4, 8'h33, 8'hff);
       #`longdelay;
       i2c_read(8'b11100000, 8'd0,8'd8);
    end
