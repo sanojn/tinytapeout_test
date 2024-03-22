@@ -166,15 +166,14 @@ module tt_um_sanojn_ttrpg_dice (
     // IOctrl > 128 will output IOctrl[0]
     always @(posedge clk) begin
       pwm <= {1'b0,pwm[6:0]} + IOctrl[6:0];
-      if (IOctrl[7])
-        pwm[7] <= IOctrl[0];
+      if (IOctrl[7]) pwm[7] <= IOctrl[0];
     end
     assign uio_o[4] = pwm[7];
 
     // I2C reads
     always @(*) begin
       if (!addr[2]) rdata <= mem[addr[1:0]];
-      else if (addr==3b'100) rdata <= uio_in;
+      else if (addr==3'b100) rdata <= uio_in;
       else if (addr==3'b101) rdata <= { 7'b0 , uio_oe[4] };
       else if (addr==3'b111) rdata <= IOctrl;
       else rdata <= ui_in;
