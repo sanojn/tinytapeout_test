@@ -117,8 +117,8 @@ module tb ();
    assign (pull1,strong0) scl_bus = (uio_oe[3] ? uio_out[3] : 1'bz);
    assign sda_bus = sda;
    assign scl_bus = scl;
-   assign uio_in[3] = sda_bus;
-   assign uio_in[2] = scl_bus;
+   buf (uio_in[3],sda_bus);
+   buf (uio_in[2],scl_bus);
    
    task i2c_init;
      begin
