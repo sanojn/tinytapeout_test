@@ -45,6 +45,11 @@ module tb ();
   // The testbench module does some preprocesing of inputs and outputs that
   // simplifies life for the cocotb testbench
   
+
+  // cocotb access points to the config inputs
+   wire [2:0] cfg;
+   assign uio_in[7:5] = cfg;
+   
   // Apply button inputs as active high or low depending on uio_in[5]
   wire btn4, btn6, btn8, btn10, btn12, btn20, btn100;
   assign ui_in[0] = (uio_in[5] ? btn4 : ~btn4);
