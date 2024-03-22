@@ -187,7 +187,7 @@ module tb ();
       end
    endtask
 
-   task i2c_recvbit(); // call with scl low
+   task i2c_recvbit; // call with scl low
       begin
          sda <= 1'bz; // release data
          #`delay;
