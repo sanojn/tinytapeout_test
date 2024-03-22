@@ -58,7 +58,7 @@ module i2c_slave #(
     else if	(sda_rise)
        last_event <= sda_rise_event;
     else if (sda_fall)
-       last_event = sda_fall_event;
+       last_event <= sda_fall_event;
 
   // Detect start and stop events
   always @(posedge clk) begin
