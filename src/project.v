@@ -136,12 +136,55 @@ module tt_um_sanojn_ttrpg_dice (
       .wen(wen),
       .wdata(wdata),
       .rdata_used(rdata_used),
-      .rdata(addr)
+      .rdata(rdata)
     );
 
+    // I2C Peripheral memory
+    reg [7:0] mem [3:0];
+    reg mem_en;
+    
+    always @(posedge clk)
+      if (!addr[2] && wen)
+        mem[addr[1:0]] <= wdata;
+
+    // I2C Peripheral GPIO pin uio[4]
+    reg [7:0] IOctrl;
+    reg [7:0] pwm
+    always @(posedge clk)
+      if (!rst_n) begin
+        uio_o[4]  <= 1'b0;
+        uio_oe[4] <= 1'b0;
+      end else begin
+        if (addr[2:0]==3'b100 && wen)
+          IOctrl <= wdata;
+        if (addr[2:0]==3'b101 && wen)
+          uio_oe[4] <= wdata[0];
+      end
+  
+    // simple PWM generator for the IO pin
+    // IOctrl < 128 will output a PWM signal based on IOctrl[6:0] / 128
+    // IOctrl > 128 will output IOctrl[0]
+    always @(posedge clk) begin
+      pwm <= {1'b0,pwm[6:0]} + IOctrl[6:0];
+      if (IOctrl[7})
+        pwm[7] <= IOctrl[0];
+    end
+    assign uio_o[4] = pwm[7];
+
+    // I2C reads
+    always @(*) begin
+      if (!addr[2]) rdata <= mem[addr[1:0]];
+      else if (addr==3b'100) rdata <= IOctrl;
+      else if (addr==3'b101) rdata <= { 7'b0 , uio_oe[4] };
+      else if (addr==3'b110) rdata <= ui_in;
+    end
+
+      
     // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out[7:3] = 3'b0;
+    assign uio_out[7:5] = 2'b0;
+    assign uio_out[3]   = 1'b0;
     assign uio_oe[1:0]  = 2'b11;
-    assign uio_oe[7:3]  = 5'b0;
+    assign uio_oe[7:5]  = 5'b0;
+    assign uio_oe[3]  = 5'b0;
 
 endmodule
