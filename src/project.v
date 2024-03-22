@@ -71,7 +71,7 @@ module tt_um_sanojn_ttrpg_dice (
         end
 
     // Turn off digit outputs after ~8 seconds
-    reg showDigitTimeout;
+    wire showDigitTimeout;
     reg [7:0] timeoutCounter;
     always @(posedge clk) begin
         if (rst_sync==0) begin
