@@ -112,7 +112,7 @@ module tb ();
    //////////////////////////////////////////////////////////
    // Excercising the I2C slave
    //////////////////////////////////////////////////////////
-   `define delay 15000
+   `define delay 150000
    
    reg sda, scl;
    wire sda_bus, scl_bus;
@@ -217,6 +217,14 @@ module tb ();
       #`delay;
       #`delay;
       #`delay;
+      #`delay;
+      #`delay;
       i2c_write(8'b11100000, 8'd10, 8'b01010101, 8'd31);
+      #`delay;
+      #`delay;
+      #`delay;
+      #`delay;
+      #`delay;
+      i2c_write(8'b11100000, 8'd127, 8'b11111010, 8'd77);
    end
 endmodule
