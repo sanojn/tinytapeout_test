@@ -123,6 +123,10 @@ module tb ();
    // strength reduction to get well-defined inputs
    buf (uio_in[2],sda_bus);
    buf (uio_in[3],scl_bus);
+
+   // registers for received data
+   reg rbit, rvalid;
+   reg [7:0] rdata;
    
    task i2c_init;
      begin
@@ -164,7 +168,7 @@ module tb ();
      end
    endtask
 
-   task i2c_sendbit(d); // call with scl
+   task i2c_sendbit(d); // call with scl low
       begin
          sda <= ( d ? 1'bz : 1'b0 ); // assert data
          #`delay;
@@ -185,6 +189,28 @@ module tb ();
       end
    endtask
 
+   task i2c_recvbit(d); // call with scl low
+      begin
+         sda <= 1'bz; // release data
+         #`delay;
+         scl <= 1'bz; // pulse clock
+         #`delay;
+         rbit <= sda; // sample data
+         scl <= 1'b0;
+         #`delay;
+      end
+   endtask
+         
+   task i2c_recvbyte;
+      begin
+         integer i;
+         for (i=7; i>=0 ; i = i-1 ) begin
+            i2c_recvbit(data[i]);
+            rdata[i] <= rbit;
+         end
+      end
+   endtask
+
    task i2c_checkack;
       begin
          sda <= 1'bz;
@@ -196,7 +222,22 @@ module tb ();
          #`delay;
       end
    endtask
-   
+
+   task i2c_emitack;
+      begin
+         sda <= 1'b0;
+         #`delay;
+         rvalid <= 1'b1;
+         scl <= 1'bz;
+         #`delay;
+         rvalid <= 1'b0;
+         scl <= 1'b0;
+         #`delay;
+         sda <= 1'bz;
+      end
+   endtask
+
+
    task i2c_write(input [7:0] i2c_addr, sub_addr, data0, data1);
      begin
         i2c_start();
@@ -212,19 +253,32 @@ module tb ();
      end
    endtask
 
+   task i2c_read(input [7:0] i2c_addr, sub_addr, no_of_bytes);
+     begin
+        i2c_start();
+        i2c_sendbyte(i2c_addr & 8'hfe); // assert write bit
+        i2c_checkack();
+        i2c_sendbyte(sub_addr);
+        i2c_checkack();
+        i2c_start();                    // emit a restart
+        i2c_sendbyte(i2c_addr | 8'h01); // assert read bit
+        i2c_checkack();
+        integer i;
+        for (i=1, i<no_of_bytes; i=i+1) begin
+          i2c_recvbyte();
+          i2c_emitack();
+        end
+        i2c_stop();
+     end
+   endtask
+   
    initial begin
       i2c_init;
-      #`delay;
-      #`delay;
-      #`delay;
-      #`delay;
-      #`delay;
+      # 8 * `delay;
       i2c_write(8'b11100000, 8'd10, 8'b01010101, 8'd31);
-      #`delay;
-      #`delay;
-      #`delay;
-      #`delay;
-      #`delay;
+      # 8 * `delay;
       i2c_write(8'b11100000, 8'd127, 8'b11111010, 8'd77);
+      # 8 * `delay;
+      i2c_read(8'b11100000, 8'd126,8'd3);
    end
 endmodule
