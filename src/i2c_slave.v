@@ -73,7 +73,7 @@ module i2c_slave #(
   parameter ack = 4'd3;
   parameter write_bytes = 4'd4;
   parameter write_bytes_f = 4'd5;
-  parameter write_acq = 4'd6;
+  parameter write_ack = 4'd6;
   parameter read_bytes_f = 4'd7;
   parameter read_ack = 4'd8;
 		
@@ -175,65 +175,66 @@ module i2c_slave #(
                  end // falling clock in subaddr ack state
                end // addr_ok
              end // state ack
-							
-				write_bytes: begin
+        
+        write_bytes: begin
                        pull_sda	<= 1'b0;
                        if (scl_rise) begin
                          dbyte <= {dbyte[6:0] , sda_r[0]}; // shift in data bit
-										     state = write_bytes_f;
-										     counter <= counter + 1'b1;
-									     end // scl_rise
+                         state = write_bytes_f;
+                         counter <= counter + 1'b1;
+                       end // scl_rise
                      end // state write_bytes
 	
-				write_bytes_f: begin
+        write_bytes_f: begin
                          pull_sda	<= 1'b0;
                          if (scl_fall) begin
                            if (counter < 4'd8)
-												     state = write_bytes; // get more bits
-											     else begin
-												     counter <= 4'd0;
-												     wen     <= 1'b1;
-												     state	= write_acq;
-											     end // counter
+                             state = write_bytes; // get more bits
+                           else begin
+                             counter <= 4'd0;
+                             wen     <= 1'b1;
+                             state	= write_ack;
+                           end // counter
                          end // scl_fall
                        end // state write_bytes_f
         
-				write_acq: begin
+        write_ack: begin
                      pull_sda <= 1'b1;
                      if (scl_fall) begin
-										   pull_sda <= 1'b0;
-										   state = write_bytes;
-									   end // scl_fall
+                       pull_sda <= 1'b0;
+                       addr <= addr + 1'b1;
+                       state = write_bytes;
+                     end // scl_fall
                    end // state write_acq
-									
-				read_bytes_f: begin
+
+        read_bytes_f: begin
                         pull_sda <= (dbyte[7] == 1'b0);
                         if (scl_rise)
-							            counter <= counter + 1'd1;
+                          counter <= counter + 1'd1;
                           if (scl_fall) begin
                             if (counter < 4'd8)
                               dbyte <= {dbyte[6:0], 1'b0};
-			                      else begin 
-	                            pull_sda <= 1'b0;
+                            else begin 
+                              pull_sda <= 1'b0;
                               state = read_ack;
-											      end
+                            end
                           end // scl_fall in read_bytes_f
-										  end //state read_bytes_f
-									
-				read_ack: begin
+                      end //state read_bytes_f
+
+        read_ack: begin
                     if (scl_rise)
                       if (sda_r[0])  // NAK
-											  state = reset;
+                        state = reset;
                     if (scl_fall) begin
-										  // Capture rdata from app, and prepare it for the next read
+                      // Capture rdata from app, and prepare it for the next read
                       dbyte <= rdata;
                       addr <= addr + 1'b1;
                       counter <= 4'd0;
                       rdata_used <= 1'b1;
-											state = read_bytes_f;
+                      state = read_bytes_f;
                     end // scl_fall in read_acq state
-									end // state read_acq
-        
+                  end // state read_acq
+
         default: state = reset;
 			endcase // FSM state
     end // rst
