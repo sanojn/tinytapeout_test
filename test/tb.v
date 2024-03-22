@@ -206,7 +206,7 @@ module tb ();
       begin
          integer i;
          for (i=7; i>=0 ; i = i-1 ) begin
-            i2c_recvbit(data[i]);
+            i2c_recvbit();
             rdata[i] <= rbit;
          end
       end
