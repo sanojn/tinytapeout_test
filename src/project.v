@@ -153,8 +153,8 @@ module tt_um_sanojn_ttrpg_dice (
     reg io, io_oe;
     always @(posedge clk)
       if (!rst_n) begin
-        io     <= 1'b0;
-        io_oe[ <= 1'b0;
+        io    <= 1'b0;
+        io_oe <= 1'b0;
       end else begin
         if (addr[2:0]==3'b100 && wen)
           IOctrl <= wdata;
