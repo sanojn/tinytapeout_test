@@ -74,8 +74,9 @@ module i2c_slave #(
   parameter write_bytes = 4'd4;
   parameter write_bytes_f = 4'd5;
   parameter write_ack = 4'd6;
-  parameter read_bytes_f = 4'd7;
-  parameter read_ack = 4'd8;
+  parameter read_bytes_pre = 4'd7;
+  parameter read_bytes_f = 4'd8;
+  parameter read_ack = 4'd9;
 		
   // This FSM tracks the bus transaction and executes the application R/W commands
   reg [7:0] dbyte;
@@ -151,13 +152,10 @@ module i2c_slave #(
                      end else begin
                        // Remember that this is a read transaction
                        rw <= 1'b1;
-                       // Grab data from appliction, start the reply transaction
-                       // and prepare the application for next read
+                       // Grab data from application snd start the reply transaction
                        dbyte <= rdata;
-                       addr <= addr + 1'b1;
-                       counter <= 4'd0;
                        rdata_used <= 1'b1;
-                       state = read_bytes_f;
+                       state = read_bytes_pre;
                      end // dbyte[0] (read/write)
                    end // falling clock in slave address ack state
                  end // SLAVE_ADDR check
@@ -205,8 +203,14 @@ module i2c_slave #(
                        addr <= addr + 1'b1;
                        state = write_bytes;
                      end // scl_fall
-                   end // state write_acq
+                   end // state write_ack
 
+        read_bytes_pre: begin
+                          counter <= 4'd0;
+                          addr <= addr+1; // allow application to prepare for the next access
+                          state <= read_bytes_f;
+                        end // state read_bytes_pre
+        
         read_bytes_f: begin
                         pull_sda <= (dbyte[7] == 1'b0);
                         if (scl_rise)
@@ -226,12 +230,10 @@ module i2c_slave #(
                       if (sda_r[0])  // NAK
                         state = reset;
                     if (scl_fall) begin
-                      // Capture rdata from app, and prepare it for the next read
+                      // Capture rdata from app
                       dbyte <= rdata;
-                      addr <= addr + 1'b1;
-                      counter <= 4'd0;
                       rdata_used <= 1'b1;
-                      state = read_bytes_f;
+                      state = read_bytes_pre;
                     end // scl_fall in read_acq state
                   end // state read_acq
 
