@@ -281,16 +281,16 @@ module tb ();
       #`longdelay;
       i2c_write(8'b11100000, 8'd6, 8'h03, 8'h04);
       #`longdelay;
-      i2c_write(8'b11100000, 8'd8, 8'h33, 8'hff);
+      i2c_write(8'b11100000, 8'd8, 8'h2b, 8'hff); // ~1/3 duty cycle
       #`longdelay;
       i2c_read(8'b11100000, 8'd0,8'd12);
       #`longdelay;
-      i2c_write(8'b11100000, 8'd4, 8'h25, 8'hff);
+      i2c_write(8'b11100000, 8'd8, 8'h21, 8'hff); // ~1/4 duty cycle
       #`longdelay;
-      i2c_write(8'b11100000, 8'd4, 8'h51, 8'hff);
+      i2c_write(8'b11100000, 8'd8, 8'h41, 8'hff); // ~1/2 duty cycle
       #`longdelay;
-      i2c_write(8'b11100000, 8'd4, 8'h01, 8'hff);
+      i2c_write(8'b11100000, 8'd8, 8'h01, 8'hff); // 1/128 duty cycle
       #`longdelay;
-      i2c_write(8'b11100000, 8'd4, 8'h127, 8'hff);
+      i2c_write(8'b11100000, 8'd8, 8'h7f, 8'hff); // 127/128 duty cycle
    end
 endmodule
