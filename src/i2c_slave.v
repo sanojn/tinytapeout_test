@@ -6,7 +6,7 @@ module i2c_slave #(
   parameter SLAVE_ADDR = 7'b1110000 // 0x70 (0xE0 and 0xE1)
   )
   (
-	  input	clk,
+    input	clk,
     input  rst_n,
     output sda_o,
     output sda_oe,
@@ -208,7 +208,7 @@ module i2c_slave #(
         read_bytes_pre: begin
                           counter <= 4'd0;
                           addr <= addr+1; // allow application to prepare for the next access
-                          state <= read_bytes_f;
+                          state = read_bytes_f;
                         end // state read_bytes_pre
         
         read_bytes_f: begin
