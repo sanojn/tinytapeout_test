@@ -55,3 +55,40 @@ Static configuration inputs on uio[7:5] should be connected to VDD or GND.
 The chip may struggle to supply common anode displays with enough current.
 If so, drive the common anode pin with an inverting transistor driver and
 change the active level of the 'common' output by setting uio[7] to 0.
+
+## But wait: There's more!
+
+The die roller only used 1/3 of the available area, and I had a few spare pins, so I also added a simple I2C slave to experiment with. It contains an 8 byte memory and a GPIO unit that can read the ui pins, and a GPIO pin uio[0] that can be used as input or output, and also has PWM capabilities.
+
+The slave has a 7-bit I2C address 0x70. Communicate with it as if it were an I2C memory with a one byte address: Make a write transaction where the first byte is the sub-adress, followed by any number of data bytes. The data bytes will be stored in successive locations. Make a read transaction by first making a dummy write without data bytes to set the sub-address, followed by a restart and a read transaction to read any number of consecutive bytes back.
+
+
+### Address Map
+The 7-bit I2C slave address is 0x70.
+
+The address map of the peripheral is as follows:
+
+| Address   | Function     |
+| --------- | ------------ |
+| 0x0 - 0x7 | Memory cells |
+| 0x8       | IOCtrl       |
+| 0x9       | IO_oe        |
+| 0xA       | uio_in (r/o) |
+| 0xB       | ui_in (r/o)  |
+
+### IOCtrl
+Write 0 to set uio[0] to 0
+Write 0 to 128 to output a PWM waveform with duty cycle IOCtrl/128
+Write >128 to output 1
+
+### IO_oe
+Bit 0 = 0 configures uio[0] as an input
+Bit 0 = 1 configures uio[0] as an output
+
+### uio_in, ui_in
+Reads the current values of the uio and ui pins.
+Remember that the dice roller is still active, so you will see things happening on the uio[4:3] pins, as well as the state of the I2C pins.
+
+### Testing the I2C slave
+Set the clock frequency to 10 MHz or above. It should be possible to access the I2C slave from the I2C1 interface of the RP2040 or from an I2C master connected to the PMOD interface J12, where you can also access he PWM output.
+ 
