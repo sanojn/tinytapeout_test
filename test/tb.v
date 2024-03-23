@@ -277,8 +277,20 @@ module tb ();
       #`longdelay;
       i2c_write(8'b11100000, 8'd2, 8'h69, 8'h96);
       #`longdelay;
+      i2c_write(8'b11100000, 8'd0, 8'h01, 8'h02);
+      #`longdelay;
+      i2c_write(8'b11100000, 8'd2, 8'h03, 8'h04);
+      #`longdelay;
       i2c_write(8'b11100000, 8'd4, 8'h33, 8'hff);
       #`longdelay;
       i2c_read(8'b11100000, 8'd0,8'd8);
+      #`longdelay;
+      i2c_write(8'b11100000, 8'd4, 8'h33, 8'hff);
+      #`longdelay;
+      i2c_write(8'b11100000, 8'd4, 8'h51, 8'hff);
+      #`longdelay;
+      i2c_write(8'b11100000, 8'd4, 8'h01, 8'hff);
+      #`longdelay;
+      i2c_write(8'b11100000, 8'd4, 8'h127, 8'hff);
    end
 endmodule
