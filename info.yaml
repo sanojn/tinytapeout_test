@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "TTRPG Dice"      # Project title
+  title:        "TTRPG Dice + simple I2C peripheral"      # Project title
   author:       "Jonas Nilsson"      # Your name
   discord:      "jonas_n"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "TTRPG dice roller"      # One line description of what your project does
@@ -44,9 +44,9 @@ pinout:
   # Bidirectional pins
   uio[0]: "1s digit common (output)"
   uio[1]: "10s digit common (output)"
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
+  uio[2]: "SDA (bidir)"
+  uio[3]: "SCL (input)"
+  uio[4]: "GPIO + PWM output (bidir)"
   uio[5]: "Button polarity (input)"
   uio[6]: "Segment polarity (input)"
   uio[7]: "Common polarity (input)"
