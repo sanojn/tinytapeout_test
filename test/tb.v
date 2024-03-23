@@ -66,8 +66,8 @@ module tb ();
   // Check which segments are lit
   // common signals are active when equal to uio_in[7]
   wire digit1_active, digit10_active;
-  assign digit1_active  = ( uio_out[0] == uio_in[7] ) && uio_oe[0]==1'b1;
-  assign digit10_active = ( uio_out[1] == uio_in[7] ) && uio_oe[1]==1'b1;
+  assign digit1_active  = ( uio_out[3] == uio_in[7] ) && uio_oe[3]==1'b1;
+  assign digit10_active = ( uio_out[4] == uio_in[7] ) && uio_oe[4]==1'b1;
 
   // segments are lit when equal to uio_in[6] and when the common
   // signal of either digit1 or digit10 is active
@@ -117,13 +117,13 @@ module tb ();
    
    reg sda, scl;
    wire sda_bus, scl_bus;
-   assign (pull1,strong0) sda_bus = (uio_oe[2] ? uio_out[2] : 1'b1);
+   assign (pull1,strong0) sda_bus = (uio_oe[1] ? uio_out[1] : 1'b1);
    pullup(scl_bus);
    assign sda_bus = sda;
    assign scl_bus = scl;
    // strength reduction to get well-defined inputs
-   buf (uio_in[2],sda_bus);
-   buf (uio_in[3],scl_bus);
+   buf (uio_in[1],sda_bus);
+   buf (uio_in[2],scl_bus);
 
    // registers for received data
    reg rbit, rvalid;
