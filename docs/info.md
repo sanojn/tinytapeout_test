@@ -64,7 +64,7 @@ The slave has a 7-bit I2C address 0x70. Communicate with it as if it were an I2C
 
 
 ### Address Map
-The 7-bit I2C slave address is 0x70.
+The 7-bit I2C slave address is 0x70.  
 
 The address map of the peripheral is as follows:
 
@@ -77,16 +77,16 @@ The address map of the peripheral is as follows:
 | 0xB       | ui_in (r/o)  |
 
 ### IOCtrl
-Write 0 to set uio[0] to 0
-Write 0 to 128 to output a PWM waveform with duty cycle IOCtrl/128
-Write >128 to output 1
+Write 0 to set uio[0] to 0  
+Write 0 to 128 to output a PWM waveform with duty cycle IOCtrl/128  
+Write >128 to output 1  
 
 ### IO_oe
-Bit 0 = 0 configures uio[0] as an input
-Bit 0 = 1 configures uio[0] as an output
+Bit 0 = 0 configures uio[0] as an input  
+Bit 0 = 1 configures uio[0] as an output  
 
 ### uio_in, ui_in
-Reads the current values of the uio and ui pins.
+Reads the current values of the uio and ui pins.  
 Remember that the dice roller is still active, so you will see things happening on the uio[4:3] pins, as well as the state of the I2C pins.
 
 ### Testing the I2C slave
